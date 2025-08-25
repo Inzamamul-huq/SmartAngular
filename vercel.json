@@ -1,15 +1,14 @@
 {
   "version": 2,
-  "framework": "angular",
-  "rewrites": [
-    { "source": "/:path*", "destination": "/index.html" },
-    { "source": "/", "destination": "/index.html" }
+  "builds": [
+    {
+      "src": "dist/smart/server/server.mjs",
+      "use": "@vercel/angular",
+      "config": { "includeFiles": ["**/*.js", "**/*.mjs"] }
+    }
   ],
   "routes": [
-    { "handle": "filesystem" },
-    { "src": "/.*", "dest": "/index.html" }
-  ],
-  "outputDirectory": "dist/smart/browser",
-  "cleanUrls": true,
-  "trailingSlash": false
+    { "src": "^/assets/(.*)", "dest": "/assets/$1" },
+    { "src": "^/(.*)", "dest": "/" }
+  ]
 }
