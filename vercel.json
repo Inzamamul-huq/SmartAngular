@@ -1,4 +1,8 @@
 {
   "version": 2,
-  "framework": "angular"
+  "framework": "angular",
+  "rewrites": [
+    { "source": "/(.*)", "destination": "/index.html" }
+  ],
+  "outputDirectory": "dist/smart/browser"
 }
