@@ -87,7 +87,7 @@ export class Experiences implements OnInit {
     if (attachmentPath.startsWith('http')) {
       return attachmentPath;
     }
-    return `https://smartrecruit-l27g.onrender.com${attachmentPath}`;
+    return `https://smartrecruit-9ofm.onrender.com${attachmentPath}`;
   }
 
   getFileName(path: string): string {

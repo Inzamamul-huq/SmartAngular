@@ -1,6 +1,6 @@
 {
   "/api": {
-    "target": "https://smartrecruit-l27g.onrender.com",
+    "target": "https://smartrecruit-9ofm.onrender.com",
     "secure": false,
     "changeOrigin": true,
     "logLevel": "info"

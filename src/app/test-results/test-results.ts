@@ -333,7 +333,7 @@ export class TestResults implements OnInit {
         console.log('4. Found job:', job);
         
        
-        const applicantsUrl = `https://smartrecruit-l27g.onrender.com/api/admin/viewjobapplicants/${jobId}/`;
+        const applicantsUrl = `https://smartrecruit-9ofm.onrender.com/api/admin/viewjobapplicants/${jobId}/`;
         console.log('5. Fetching applicants from:', applicantsUrl);
         
         this.http.get<any>(applicantsUrl).subscribe({

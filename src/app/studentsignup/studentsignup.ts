@@ -57,7 +57,7 @@ export class Studentsignup {
     
     console.log('Sending signup data:', signupData);
     
-    this.http.post<SignupResponse>('https://smartrecruit-l27g.onrender.com/api/student/signup/', signupData, {
+    this.http.post<SignupResponse>('https://smartrecruit-9ofm.onrender.com/api/student/signup/', signupData, {
       withCredentials: true, 
       headers: { 'Content-Type': 'application/json' } 
     })

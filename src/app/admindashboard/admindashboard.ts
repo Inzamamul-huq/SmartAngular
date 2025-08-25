@@ -256,7 +256,7 @@ Hiring Team`
     console.log('Fetching students...');
     this.error = null;
     
-    this.http.get<any>('https://smartrecruit-l27g.onrender.com/api/viewuser/', {
+    this.http.get<any>('https://smartrecruit-9ofm.onrender.com/api/viewuser/', {
       params: { admin: 'true' },
       withCredentials: true
     })
@@ -309,7 +309,7 @@ Hiring Team`
     this.postError = null;
     this.postSuccess = false;
 
-    const url = 'https://smartrecruit-l27g.onrender.com/api/admin/post-job/';
+    const url = 'https://smartrecruit-9ofm.onrender.com/api/admin/post-job/';
     console.log('Making request to:', url);
 
     this.http.post(url, this.jobPost, {
@@ -408,7 +408,7 @@ Hiring Team`
     this.jobsLoading = true;
     this.jobs = [];
     
-    this.http.get<any>('https://smartrecruit-l27g.onrender.com/api/jobs/', {
+    this.http.get<any>('https://smartrecruit-9ofm.onrender.com/api/jobs/', {
       withCredentials: true
     }).subscribe({
       next: async (response) => {
@@ -468,7 +468,7 @@ Hiring Team`
     
     this.loadJobQuestions(job.id);
     
-    const url = `https://smartrecruit-l27g.onrender.com/api/admin/viewjobapplicants/${job.id}/`;
+    const url = `https://smartrecruit-9ofm.onrender.com/api/admin/viewjobapplicants/${job.id}/`;
     console.log('Fetching applicants from:', url);
     
     interface ApplicantsResponse {
@@ -501,7 +501,7 @@ Hiring Team`
           }
           
           
-          this.http.get<any>('https://smartrecruit-l27g.onrender.com/api/viewuser/admin/', {
+          this.http.get<any>('https://smartrecruit-9ofm.onrender.com/api/viewuser/admin/', {
             withCredentials: true
           }).subscribe({
             next: (studentsResponse) => {
@@ -528,7 +528,7 @@ Hiring Team`
                   
                   if (student?.id) {
                     
-                    this.http.get<any>(`https://smartrecruit-l27g.onrender.com/api/student/view/${student.id}`, {
+                    this.http.get<any>(`https://smartrecruit-9ofm.onrender.com/api/student/view/${student.id}`, {
                       withCredentials: true
                     }).subscribe({
                       next: (studentDetails) => {
@@ -611,7 +611,7 @@ Hiring Team`
 
   viewResume(applicant: Applicant) {
     if (applicant.student_id && applicant.resume) {
-      const baseUrl = 'https://smartrecruit-l27g.onrender.com';
+      const baseUrl = 'https://smartrecruit-9ofm.onrender.com';
       if (applicant.resume.startsWith('http')) {
         window.open(applicant.resume, '_blank');
       } 
@@ -635,9 +635,9 @@ Hiring Team`
       if (applicant.resume.startsWith('http')) {
         resumeUrl = applicant.resume;
       } else if (applicant.resume.startsWith('/media/')) {
-        resumeUrl = `https://smartrecruit-l27g.onrender.com${applicant.resume}`;
+        resumeUrl = `https://smartrecruit-9ofm.onrender.com${applicant.resume}`;
       } else {
-        resumeUrl = `https://smartrecruit-l27g.onrender.com/media/resumes/${applicant.resume}`;
+        resumeUrl = `https://smartrecruit-9ofm.onrender.com/media/resumes/${applicant.resume}`;
       }
       
       
@@ -685,7 +685,7 @@ Hiring Team`
     
     
     if (applicant.student_id && this.selectedJob?.id) {
-      const url = `https://smartrecruit-l27g.onrender.com/api/student/update-selection/${applicant.student_id}/`;
+      const url = `https://smartrecruit-9ofm.onrender.com/api/student/update-selection/${applicant.student_id}/`;
       
       this.http.post(url, 
         { is_selected: applicant.is_shortlisted },
@@ -750,7 +750,7 @@ Hiring Team`
     this.questionError = null;
     
     
-    this.http.get<any>(`https://smartrecruit-l27g.onrender.com/api/admin/viewjobapplicants/${job.id}/`, {
+    this.http.get<any>(`https://smartrecruit-9ofm.onrender.com/api/admin/viewjobapplicants/${job.id}/`, {
       withCredentials: true
     }).subscribe({
       next: (response) => {
@@ -759,7 +759,7 @@ Hiring Team`
           const testScheduleId = response.applicants[0]?.test_schedule_id;
           if (testScheduleId) {
             
-            this.http.get<any>(`https://smartrecruit-l27g.onrender.com/api/getquestions/job/${job.id}/`, {
+            this.http.get<any>(`https://smartrecruit-9ofm.onrender.com/api/getquestions/job/${job.id}/`, {
               withCredentials: true
             }).subscribe({
               next: (questionsResponse) => {
@@ -832,7 +832,7 @@ Hiring Team`
 
     this.questionError = null;
 
-    this.http.post('https://smartrecruit-l27g.onrender.com/api/createquestion/', this.newQuestion, {
+    this.http.post('https://smartrecruit-9ofm.onrender.com/api/createquestion/', this.newQuestion, {
       withCredentials: true
     }).subscribe({
       next: (response: any) => {
@@ -934,7 +934,7 @@ Hiring Team`
   loadJobQuestions(jobId: number) {
     if (!this.selectedJob) return;
     
-    this.http.get<any>(`https://smartrecruit-l27g.onrender.com/api/getquestions/job/${jobId}/`, {
+    this.http.get<any>(`https://smartrecruit-9ofm.onrender.com/api/getquestions/job/${jobId}/`, {
       withCredentials: true
     }).subscribe({
       next: (response) => {
@@ -962,7 +962,7 @@ Hiring Team`
     this.jobApplicants = [];
     this.error = null;
     
-    this.http.get<any>(`https://smartrecruit-l27g.onrender.com/api/admin/viewjobapplicants/${jobId}/`, {
+    this.http.get<any>(`https://smartrecruit-9ofm.onrender.com/api/admin/viewjobapplicants/${jobId}/`, {
       withCredentials: true
     }).subscribe({
       next: (response) => {
@@ -1031,7 +1031,7 @@ Hiring Team`
           
           console.log('Scheduling test with data:', JSON.stringify(testData, null, 2));
 
-          await this.http.post('https://smartrecruit-l27g.onrender.com/api/admin/schedule-test/', testData, {
+          await this.http.post('https://smartrecruit-9ofm.onrender.com/api/admin/schedule-test/', testData, {
             withCredentials: true,
             headers: {
               'Content-Type': 'application/json',
@@ -1173,7 +1173,7 @@ Hiring Team`
     const originalAllowStatus = student.allow;
     student.allow = student.allow === 'allow' ? null : 'allow';
     
-    const url = `https://smartrecruit-l27g.onrender.com/api/admin/toggle-approval/${student.id}/`;
+    const url = `https://smartrecruit-9ofm.onrender.com/api/admin/toggle-approval/${student.id}/`;
     
     this.http.post(url, {}, { withCredentials: true })
       .subscribe({
@@ -1205,7 +1205,7 @@ Hiring Team`
   deleteJob(jobId: number, event: Event) {
     event.stopPropagation();
     if (confirm('Are you sure you want to delete this job? This action cannot be undone.')) {
-      this.http.delete(`https://smartrecruit-l27g.onrender.com/api/jobs/crud/${jobId}/`, { 
+      this.http.delete(`https://smartrecruit-9ofm.onrender.com/api/jobs/crud/${jobId}/`, { 
         withCredentials: true,
         headers: {
           'Content-Type': 'application/json',

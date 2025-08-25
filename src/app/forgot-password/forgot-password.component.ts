@@ -39,7 +39,7 @@ export class ForgotPasswordComponent {
     this.error = null;
     const email = this.forgotForm.get('email')?.value;
 
-    this.http.post('https://smartrecruit-l27g.onrender.com/api/student/send-otp/', { email }, { withCredentials: true })
+    this.http.post('https://smartrecruit-9ofm.onrender.com/api/student/send-otp/', { email }, { withCredentials: true })
       .subscribe({
         next: () => {
           this.success = true;

@@ -57,7 +57,7 @@ export class ResetPasswordComponent implements OnInit {
 
     const newPassword = this.resetForm.get('newPassword')?.value;
     
-    this.http.post('https://smartrecruit-l27g.onrender.com/api/student/reset-password/', {
+    this.http.post('https://smartrecruit-9ofm.onrender.com/api/student/reset-password/', {
       email: this.email,
       otp: this.otp,
       new_password: newPassword

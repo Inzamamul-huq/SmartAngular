@@ -68,7 +68,7 @@ export class JobDetail implements OnInit {
       if (!email) {
         throw new Error('Invalid user data format: missing email');
       }
-      const lookupUrl = `https://smartrecruit-l27g.onrender.com/api/student/by-email/?email=${encodeURIComponent(email)}`;
+      const lookupUrl = `https://smartrecruit-9ofm.onrender.com/api/student/by-email/?email=${encodeURIComponent(email)}`;
       this.http.get<{id: number; name: string; email: string}>(lookupUrl).pipe(
         catchError((err: HttpErrorResponse) => {
           console.error('Failed to resolve student by email', err);
@@ -106,7 +106,7 @@ export class JobDetail implements OnInit {
     this.error = null;
     this.cdr.detectChanges();
 
-    const url = `https://smartrecruit-l27g.onrender.com/api/jobs/${jobId}/`;
+    const url = `https://smartrecruit-9ofm.onrender.com/api/jobs/${jobId}/`;
     console.log('API URL:', url);
 
     this.http.get<Job>(url).pipe(
@@ -193,7 +193,7 @@ export class JobDetail implements OnInit {
     const formData = new FormData();
     formData.append('resume', this.selectedFile);
 
-    this.http.post(`https://smartrecruit-l27g.onrender.com/api/student/upload-resume/${this.studentId}/`, formData, {
+    this.http.post(`https://smartrecruit-9ofm.onrender.com/api/student/upload-resume/${this.studentId}/`, formData, {
       reportProgress: true,
       observe: 'events'
     }).pipe(
@@ -242,7 +242,7 @@ export class JobDetail implements OnInit {
     formData.append('resume', this.selectedFile);
 
     this.http.post(
-      `https://smartrecruit-l27g.onrender.com/api/jobs/${this.job.id}/apply/`,
+      `https://smartrecruit-9ofm.onrender.com/api/jobs/${this.job.id}/apply/`,
       formData
     ).pipe(
       catchError((error: HttpErrorResponse) => {

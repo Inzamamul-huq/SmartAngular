@@ -21,14 +21,14 @@ export class Joblist implements OnInit {
   }
 
   fetchJobs(): void {
-    this.http.get<any[]>('https://smartrecruit-l27g.onrender.com/api/jobs/').subscribe((res) => {
+    this.http.get<any[]>('https://smartrecruit-9ofm.onrender.com/api/jobs/').subscribe((res) => {
       this.jobs = res;
     });
   }
 
   addJob(): void {
     if (!this.newJob.title || !this.newJob.description) return;
-    this.http.post('https://smartrecruit-l27g.onrender.com/api/jobs/', this.newJob).subscribe(() => {
+    this.http.post('https://smartrecruit-9ofm.onrender.com/api/jobs/', this.newJob).subscribe(() => {
       this.fetchJobs();
       this.newJob = { title: '', description: '' };
     });

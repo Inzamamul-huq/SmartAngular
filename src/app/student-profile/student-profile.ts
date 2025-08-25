@@ -16,7 +16,7 @@ export class StudentProfile implements OnInit {
   private http = inject(HttpClient);
 
   
-  private baseUrl = 'https://smartrecruit-l27g.onrender.com/api';
+  private baseUrl = 'https://smartrecruit-9ofm.onrender.com/api';
 
   
   loadingProfile = false;
@@ -61,7 +61,7 @@ export class StudentProfile implements OnInit {
       next: (res) => {
         this.loadingProfile = false;
         this.studentId = res?.id ?? null;
-        this.resumeUrl = res?.resume ? `https://smartrecruit-l27g.onrender.com${res.resume}` : null;
+        this.resumeUrl = res?.resume ? `https://smartrecruit-9ofm.onrender.com${res.resume}` : null;
         this.profileForm.patchValue({
           name: res?.name || '',
           phone: res?.phone || '',

@@ -50,7 +50,7 @@ export class VerifyOtpComponent implements OnInit {
     this.storageService.setItem('otp', otp);
     
     
-    this.http.post('https://smartrecruit-l27g.onrender.com/api/student/verify-otp/', {
+    this.http.post('https://smartrecruit-9ofm.onrender.com/api/student/verify-otp/', {
       email: this.email,
       otp: otp
     }, { withCredentials: true }).subscribe({
@@ -70,7 +70,7 @@ export class VerifyOtpComponent implements OnInit {
     this.loading = true;
     this.error = null;
     
-    this.http.post('https://smartrecruit-l27g.onrender.com/api/student/send-otp/', 
+    this.http.post('https://smartrecruit-9ofm.onrender.com/api/student/send-otp/', 
       { email: this.email },
       { withCredentials: true }
     ).subscribe({

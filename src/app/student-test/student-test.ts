@@ -32,7 +32,7 @@ interface QuestionsResponse {
 })
 export class StudentTest implements OnInit, OnDestroy {
   @ViewChild('testContainer') testContainer!: ElementRef;
-  apiBase = 'https://smartrecruit-l27g.onrender.com/api';
+  apiBase = 'https://smartrecruit-9ofm.onrender.com/api';
   scheduleId!: number;
   loading = false;
   error: string | null = null;

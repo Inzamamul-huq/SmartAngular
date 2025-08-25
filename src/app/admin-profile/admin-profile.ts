@@ -47,7 +47,7 @@ export class AdminProfile {
     }
 
     this.loading = true;
-    this.http.post('https://smartrecruit-l27g.onrender.com/api/admin/change-password/', {
+    this.http.post('https://smartrecruit-9ofm.onrender.com/api/admin/change-password/', {
       current_password,
       new_password,
       confirm_new_password

@@ -140,9 +140,9 @@ export class StudentDashboard implements OnInit, OnDestroy {
     this.error = null;
     this.cdr.detectChanges();
     
-    console.log('Fetching jobs from: https://smartrecruit-l27g.onrender.com/api/jobs/');
+    console.log('Fetching jobs from: https://smartrecruit-9ofm.onrender.com/api/jobs/');
     
-    this.http.get<Job[]>('https://smartrecruit-l27g.onrender.com/api/jobs/')
+    this.http.get<Job[]>('https://smartrecruit-9ofm.onrender.com/api/jobs/')
       .subscribe({
         next: (data) => {
           console.log('Jobs data received:', data);

@@ -23,7 +23,7 @@ interface LoginResponse {
   providedIn: 'root'
 })
 export class AuthService {
-  private apiUrl = 'https://smartrecruit-l27g.onrender.com/api';
+  private apiUrl = 'https://smartrecruit-9ofm.onrender.com/api';
   private isAuthenticatedSubject = new BehaviorSubject<boolean>(this.hasToken());
   private currentUserSubject = new BehaviorSubject<User | null>(this.getUserFromStorage());
   
