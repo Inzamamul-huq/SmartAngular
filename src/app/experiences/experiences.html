@@ -1,0 +1,154 @@
+<div class="experience-container mt-4">
+  <h2 class="mb-4">Interview Experiences</h2>
+  
+  
+  <div *ngIf="loading" class="text-center my-5">
+    <div class="spinner-border loading-spinner" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+    <p class="mt-2">Loading experiences...</p>
+  </div>
+
+  
+  <div *ngIf="error" class="error-message" role="alert">
+    {{ error }}
+  </div>
+
+  
+  <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4" *ngIf="!loading && !error">
+    <div class="col" *ngFor="let exp of experiences">
+      <div class="experience-card shadow-sm">
+        <div class="card-body">
+          <h5 class="card-title">{{ exp.company_name }}</h5>
+          <h6 class="card-subtitle">{{ exp.division_name }}</h6>
+          <p class="card-text text-truncate-2">{{ exp.overall_experience || 'No description provided' }}</p>
+          <div class="d-flex justify-content-between align-items-center">
+            <small class="text-muted">
+              <i class="bi bi-person-fill"></i> {{ exp.student_email }}
+            </small>
+            <small class="text-muted">
+              <i class="bi bi-calendar"></i> {{ formatDate(exp.submitted_at) }}
+            </small>
+          </div>
+        </div>
+        <div class="card-footer bg-transparent">
+          <button 
+            class="btn btn-outline-primary btn-sm w-100" 
+            (click)="openExperienceModal(exp, experienceModal)">
+            View Details
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  
+  <div *ngIf="!loading && !error && experiences.length === 0" class="no-experiences">
+    No interview experiences have been shared yet.
+  </div>
+</div>
+
+
+<ng-template #experienceModal let-modal>
+  <div class="modal-header bg-primary text-white">
+    <h4 class="modal-title">
+      {{ selectedExperience?.company_name }} - {{ selectedExperience?.division_name }}
+    </h4>
+    <button type="button" class="btn-close" (click)="modal.dismiss()"></button>
+  </div>
+  <div class="modal-body" *ngIf="selectedExperience">
+    <div class="mb-3">
+      <h6>Student</h6>
+      <p>{{ selectedExperience.student_email }}</p>
+    </div>
+    
+    <div class="mb-3">
+      <h6>Overall Experience</h6>
+      <p class="whitespace-pre-line">{{ selectedExperience.overall_experience || 'Not provided' }}</p>
+    </div>
+
+    <div class="mb-3" *ngIf="selectedExperience.tips">
+      <h6>Tips & Advice</h6>
+      <p class="whitespace-pre-line">{{ selectedExperience.tips }}</p>
+    </div>
+
+    <div class="row">
+      <div class="col-md-6" *ngIf="selectedExperience.aptitude_questions">
+        <div class="card mb-3">
+          <div class="card-header bg-light">Aptitude Round</div>
+          <div class="card-body">
+            <p class="card-text whitespace-pre-line">{{ selectedExperience.aptitude_questions }}</p>
+          </div>
+        </div>
+      </div>
+      
+      <div class="col-md-6" *ngIf="selectedExperience.technical_questions">
+        <div class="card mb-3">
+          <div class="card-header bg-light">Technical Round</div>
+          <div class="card-body">
+            <p class="card-text whitespace-pre-line">{{ selectedExperience.technical_questions }}</p>
+          </div>
+        </div>
+      </div>
+      
+      <div class="col-md-6" *ngIf="selectedExperience.hr_questions">
+        <div class="card mb-3">
+          <div class="card-header bg-light">HR Round</div>
+          <div class="card-body">
+            <p class="card-text whitespace-pre-line">{{ selectedExperience.hr_questions }}</p>
+          </div>
+        </div>
+      </div>
+      
+      <div class="col-md-6" *ngIf="selectedExperience.gd_topics">
+        <div class="card mb-3">
+          <div class="card-header bg-light">Group Discussion</div>
+          <div class="card-body">
+            <p class="card-text whitespace-pre-line">{{ selectedExperience.gd_topics }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    
+    <div class="mb-3" *ngIf="hasAttachments()">
+      <h6>Attachments</h6>
+      <div class="list-group">
+        <a *ngIf="selectedExperience.aptitude_attachment" 
+           [href]="getAttachmentUrl(selectedExperience.aptitude_attachment)"
+           target="_blank"
+           class="list-group-item file-attachment">
+          <i class="bi bi-file-earmark-pdf file-icon"></i>
+          <span class="text-truncate">{{ getFileName(selectedExperience.aptitude_attachment) }}</span>
+        </a>
+
+        <a *ngIf="selectedExperience.technical_attachment"
+           [href]="getAttachmentUrl(selectedExperience.technical_attachment)"
+           target="_blank"
+           class="list-group-item file-attachment">
+          <i class="bi bi-file-earmark-pdf file-icon"></i>
+          <span class="text-truncate">{{ getFileName(selectedExperience.technical_attachment) }}</span>
+        </a>
+
+        <a *ngIf="selectedExperience.hr_attachment"
+           [href]="getAttachmentUrl(selectedExperience.hr_attachment)"
+           target="_blank"
+           class="list-group-item file-attachment">
+          <i class="bi bi-file-earmark-pdf file-icon"></i>
+          <span class="text-truncate">{{ getFileName(selectedExperience.hr_attachment) }}</span>
+        </a>
+
+        <a *ngIf="selectedExperience.gd_attachment"
+           [href]="getAttachmentUrl(selectedExperience.gd_attachment)"
+           target="_blank"
+           class="list-group-item file-attachment">
+          <i class="bi bi-file-earmark-pdf file-icon"></i>
+          <span class="text-truncate">{{ getFileName(selectedExperience.gd_attachment) }}</span>
+        </a>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-secondary" (click)="modal.dismiss()">Close</button>
+  </div>
+</ng-template>

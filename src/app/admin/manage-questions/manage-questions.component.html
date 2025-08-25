@@ -1,0 +1,179 @@
+<div class="manage-questions-container">
+  <div class="back-button">
+    <button (click)="goBack()" class="btn btn-link">
+      <i class="fas fa-arrow-left"></i> Back to Dashboard
+    </button>
+  </div>
+
+  <div *ngIf="viewMode === 'list'" class="questions-list">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <h2>Manage Questions</h2>
+      <div>
+        <span *ngIf="maxQuestionsReached" class="text-danger me-3">
+          <i class="fas fa-exclamation-circle"></i> Maximum of {{ MAX_QUESTIONS }} questions reached
+        </span>
+        <button (click)="addNewQuestion()" class="btn btn-primary" [disabled]="maxQuestionsReached">
+          <i class="fas fa-plus"></i> Add New Question
+        </button>
+      </div>
+    </div>
+
+    <div *ngIf="loading" class="text-center py-4">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+      <p>Loading questions...</p>
+    </div>
+
+    <div *ngIf="error" class="alert alert-danger">
+      {{ error }}
+    </div>
+
+    <div *ngIf="!loading && questions.length === 0" class="text-center py-4">
+      <p>No questions found for this job. Click 'Add New Question' to get started.</p>
+    </div>
+
+    <div *ngIf="!loading && questions.length > 0" class="table-responsive">
+      <table class="table table-hover">
+        <thead>
+          <tr>
+            <th>Question</th>
+            <th>Options</th>
+            <th>Correct Answer</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let question of questions">
+            <td>{{ question.question_text }}</td>
+            <td>
+              <ol class="mb-0">
+                <li [class.fw-bold]="question.correct_option === 1">{{ question.option1 }}</li>
+                <li [class.fw-bold]="question.correct_option === 2">{{ question.option2 }}</li>
+                <li [class.fw-bold]="question.correct_option === 3">{{ question.option3 }}</li>
+                <li [class.fw-bold]="question.correct_option === 4">{{ question.option4 }}</li>
+              </ol>
+            </td>
+            <td>Option {{ question.correct_option }}</td>
+            <td>
+              <button (click)="editQuestion(question)" class="btn btn-sm btn-outline-primary me-2">
+                <i class="fas fa-edit"></i> Edit
+              </button>
+              <button (click)="deleteQuestion(question.id!)" class="btn btn-sm btn-outline-danger">
+                <i class="fas fa-trash"></i> Delete
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div *ngIf="viewMode === 'add'" class="question-form">
+    <h2>{{ editingQuestion ? 'Edit Question' : 'Add New Question' }}</h2>
+    
+    <form [formGroup]="questionForm" (ngSubmit)="onSubmit()">
+      <div class="mb-3">
+        <label for="question_text" class="form-label">Question Text *</label>
+        <textarea 
+          id="question_text" 
+          formControlName="question_text"
+          class="form-control"
+          rows="3"
+          [class.is-invalid]="questionForm.get('question_text')?.touched && questionForm.get('question_text')?.invalid"
+        ></textarea>
+        <div *ngIf="questionForm.get('question_text')?.touched && questionForm.get('question_text')?.invalid" class="invalid-feedback">
+          Question text is required and must be at least 5 characters long
+        </div>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Options *</label>
+        <div class="mb-2">
+          <div class="input-group">
+            <span class="input-group-text">1</span>
+            <input 
+              type="text" 
+              formControlName="option1"
+              class="form-control"
+              [class.is-invalid]="questionForm.get('option1')?.touched && questionForm.get('option1')?.invalid"
+              placeholder="Option 1"
+            >
+          </div>
+        </div>
+        <div class="mb-2">
+          <div class="input-group">
+            <span class="input-group-text">2</span>
+            <input 
+              type="text" 
+              formControlName="option2"
+              class="form-control"
+              [class.is-invalid]="questionForm.get('option2')?.touched && questionForm.get('option2')?.invalid"
+              placeholder="Option 2"
+            >
+          </div>
+        </div>
+        <div class="mb-2">
+          <div class="input-group">
+            <span class="input-group-text">3</span>
+            <input 
+              type="text" 
+              formControlName="option3"
+              class="form-control"
+              [class.is-invalid]="questionForm.get('option3')?.touched && questionForm.get('option3')?.invalid"
+              placeholder="Option 3"
+            >
+          </div>
+        </div>
+        <div class="mb-3">
+          <div class="input-group">
+            <span class="input-group-text">4</span>
+            <input 
+              type="text" 
+              formControlName="option4"
+              class="form-control"
+              [class.is-invalid]="questionForm.get('option4')?.touched && questionForm.get('option4')?.invalid"
+              placeholder="Option 4"
+            >
+          </div>
+        </div>
+      </div>
+
+      <div class="mb-4">
+        <label for="correct_option" class="form-label">Correct Option *</label>
+        <select 
+          id="correct_option" 
+          formControlName="correct_option"
+          class="form-select"
+          [class.is-invalid]="questionForm.get('correct_option')?.touched && questionForm.get('correct_option')?.invalid"
+        >
+          <option value="1">Option 1</option>
+          <option value="2">Option 2</option>
+          <option value="3">Option 3</option>
+          <option value="4">Option 4</option>
+        </select>
+        <div *ngIf="questionForm.get('correct_option')?.touched && questionForm.get('correct_option')?.invalid" class="invalid-feedback">
+          Please select the correct option
+        </div>
+      </div>
+
+      <div class="d-flex justify-content-between">
+        <button 
+          type="button" 
+          class="btn btn-outline-secondary"
+          (click)="cancelEdit()"
+        >
+          Cancel
+        </button>
+        
+        <button 
+          type="submit" 
+          class="btn btn-primary"
+          [disabled]="questionForm.invalid"
+        >
+          {{ editingQuestion ? 'Update Question' : 'Add Question' }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

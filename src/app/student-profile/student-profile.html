@@ -1,0 +1,79 @@
+<div class="student-profile">
+  <h2>Student Profile</h2>
+  <p>Update your details. You can change name, phone, password, and resume.</p>
+
+  
+  <section class="card">
+    <h3>Basic Info</h3>
+    <form [formGroup]="profileForm" (ngSubmit)="saveProfile()" novalidate>
+      <div class="grid">
+        <div class="field">
+          <label>Name</label>
+          <input type="text" formControlName="name" />
+        </div>
+        <div class="field">
+          <label>Phone</label>
+          <input type="text" formControlName="phone" />
+        </div>
+      </div>
+      <div class="actions">
+        <button type="submit" [disabled]="savingProfile || loadingProfile">{{ savingProfile ? 'Saving...' : 'Save Changes' }}</button>
+      </div>
+    </form>
+    <div *ngIf="profileSuccess" class="success">{{ profileSuccess }}</div>
+    <div *ngIf="profileError" class="error">{{ profileError }}</div>
+  </section>
+
+  
+  <section class="card">
+    <h3>Change Password</h3>
+    <form [formGroup]="passwordForm" (ngSubmit)="changePassword()" novalidate>
+      <div class="field">
+        <label>Current Password</label>
+        <div class="input-wrap">
+          <input [type]="showCurrent ? 'text' : 'password'" formControlName="current_password" />
+          <button type="button" class="toggle" aria-label="Toggle current password visibility" (click)="showCurrent = !showCurrent">
+            <i class="fas" [ngClass]="showCurrent ? 'fa-eye-slash' : 'fa-eye'"></i>
+          </button>
+        </div>
+      </div>
+      <div class="field">
+        <label>New Password</label>
+        <div class="input-wrap">
+          <input [type]="showNew ? 'text' : 'password'" formControlName="new_password" />
+          <button type="button" class="toggle" aria-label="Toggle new password visibility" (click)="showNew = !showNew">
+            <i class="fas" [ngClass]="showNew ? 'fa-eye-slash' : 'fa-eye'"></i>
+          </button>
+        </div>
+      </div>
+      <div class="field">
+        <label>Confirm New Password</label>
+        <div class="input-wrap">
+          <input [type]="showConfirm ? 'text' : 'password'" formControlName="confirm_new_password" />
+          <button type="button" class="toggle" aria-label="Toggle confirm password visibility" (click)="showConfirm = !showConfirm">
+            <i class="fas" [ngClass]="showConfirm ? 'fa-eye-slash' : 'fa-eye'"></i>
+          </button>
+        </div>
+      </div>
+      <div class="actions">
+        <button type="submit" [disabled]="changingPassword">{{ changingPassword ? 'Updating...' : 'Update Password' }}</button>
+      </div>
+    </form>
+    <div *ngIf="passwordSuccess" class="success">{{ passwordSuccess }}</div>
+    <div *ngIf="passwordError" class="error">{{ passwordError }}</div>
+  </section>
+
+  
+  <section class="card">
+    <h3>Resume</h3>
+    <div class="resume-row">
+      <input type="file" accept=".pdf,.doc,.docx" (change)="onResumeSelected($event)" />
+      <button type="button" class="secondary" disabled>{{ uploadingResume ? 'Uploading...' : 'Upload' }}</button>
+      <a *ngIf="resumeUrl" [href]="resumeUrl" target="_blank" class="link">View Current Resume</a>
+    </div>
+    <div *ngIf="resumeSuccess" class="success">{{ resumeSuccess }}</div>
+    <div *ngIf="resumeError" class="error">{{ resumeError }}</div>
+  </section>
+
+  <a routerLink="/studentdashboard" class="footer-link">← Back to Dashboard</a>
+</div>

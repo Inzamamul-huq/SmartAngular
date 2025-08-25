@@ -1,0 +1,17 @@
+<div class="admin-panel">
+  <h2>📝 Posted Job List</h2>
+
+  <div class="job-card" *ngFor="let job of jobs">
+    <h3>{{ job.title }}</h3>
+    <p>{{ job.description }}</p>
+  </div>
+
+  <hr />
+
+  <h2>📤 Add New Job</h2>
+  <form (ngSubmit)="addJob()" #jobForm="ngForm" class="job-form">
+    <input type="text" [(ngModel)]="newJob.title" name="title" placeholder="Job Title" required />
+    <textarea [(ngModel)]="newJob.description" name="description" placeholder="Job Description" required></textarea>
+    <button type="submit" [disabled]="!jobForm.form.valid">➕ Post Job</button>
+  </form>
+</div>

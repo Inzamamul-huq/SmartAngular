@@ -1,0 +1,48 @@
+.admin-panel {
+  max-width: 700px;
+  margin: 40px auto;
+  padding: 30px;
+  background-color: rgba(255, 255, 255, 0.92);
+  border-radius: 16px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+}
+
+h2 {
+  text-align: center;
+  color: #0c3b69;
+  margin-bottom: 20px;
+}
+
+.job-card {
+  background-color: #f1f9ff;
+  padding: 16px;
+  margin-bottom: 15px;
+  border-left: 6px solid #007bff;
+  border-radius: 8px;
+}
+
+.job-form input,
+.job-form textarea {
+  width: 100%;
+  padding: 10px;
+  margin: 8px 0;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 16px;
+}
+
+.job-form button {
+  margin-top: 10px;
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  font-weight: bold;
+  font-size: 16px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.job-form button:hover {
+  background-color: #0056b3;
+}

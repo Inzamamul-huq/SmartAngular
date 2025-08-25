@@ -1,0 +1,41 @@
+<div class="admin-profile">
+  <h2>Admin Profile</h2>
+  <p>Change your password (Admin account)</p>
+
+  <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
+    <div class="field">
+      <label>Current Password</label>
+      <div class="input-wrap">
+        <input [type]="showCurrent ? 'text' : 'password'" formControlName="current_password" />
+        <button type="button" class="toggle" aria-label="Toggle current password visibility" (click)="showCurrent = !showCurrent">
+          <i class="fas" [ngClass]="showCurrent ? 'fa-eye-slash' : 'fa-eye'"></i>
+        </button>
+      </div>
+    </div>
+    <div class="field">
+      <label>New Password</label>
+      <div class="input-wrap">
+        <input [type]="showNew ? 'text' : 'password'"  formControlName="new_password"  />
+        <button type="button" class="toggle" aria-label="Toggle new password visibility" (click)="showNew = !showNew">
+          <i class="fas" [ngClass]="showNew ? 'fa-eye-slash' : 'fa-eye'"></i>
+        </button>
+      </div>
+    </div>
+    <div class="field">
+      <label>Confirm New Password</label>
+      <div class="input-wrap">
+        <input [type]="showConfirm ? 'text' : 'password'" formControlName="confirm_new_password" />
+        <button type="button" class="toggle" aria-label="Toggle confirm password visibility" (click)="showConfirm = !showConfirm">
+          <i class="fas" [ngClass]="showConfirm ? 'fa-eye-slash' : 'fa-eye'"></i>
+        </button>
+      </div>
+    </div>
+
+    <button type="submit" [disabled]="loading">{{ loading ? 'Updating...' : 'Update Password' }}</button>
+  </form>
+
+  <div *ngIf="success" class="success">{{ success }}</div>
+  <div *ngIf="error" class="error">{{ error }}</div>
+
+  <a class="footer-link" routerLink="/admindashboard">← Back to Dashboard</a>
+</div>

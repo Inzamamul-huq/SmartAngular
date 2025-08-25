@@ -1,0 +1,136 @@
+<div class="dashboard-container">
+ 
+  <header class="dashboard-header">
+    <h1>Student Dashboard</h1>
+    <button (click)="logout()" class="logout-btn">Logout</button>
+  </header>
+
+ 
+  <main class="dashboard-main">
+    
+    <aside class="sidebar">
+      <div class="user-info">
+        <div class="user-avatar">
+          <i class="bi bi-person-circle"></i>
+        </div>
+        <h3>Welcome, {{getUserName()}}</h3>
+        <p class="user-email">{{getUserEmail() || 'Student'}}</p>
+      </div>
+      <nav class="sidebar-nav">
+        <a routerLink="/student/profile" routerLinkActive="active" class="profile-link">
+          <i class="bi bi-person"></i>
+          <span>My Profile</span>
+        </a>
+      </nav>
+    </aside>
+
+    
+    <div class="content">
+      
+      <div class="dashboard-tabs">
+        <button 
+          class="tab-btn" 
+          [class.active]="activeTab === 'jobs'"
+          (click)="setActiveTab('jobs')">
+          Job Listings
+        </button>
+        <button 
+          class="tab-btn" 
+          [class.active]="activeTab === 'applications'"
+          (click)="setActiveTab('applications')">
+          My Applications
+          <span *ngIf="activeTests.length > 0" class="notification-badge">{{activeTests.length}}</span>
+        </button>
+      </div>
+
+      
+      <div *ngIf="activeTab === 'jobs'" class="tab-content jobs-tab">
+        <div class="jobs-container">
+          <div class="jobs-header">
+            <h2>Available Jobs</h2>
+            <div class="search-bar">
+              <input 
+                type="text" 
+                placeholder="Search jobs..." 
+                [ngModel]="searchTerm"
+                (ngModelChange)="onSearchInput($event)"
+                (input)="onSearchInput($event)">
+            </div>
+          </div>
+        
+
+          
+
+          
+          <div *ngIf="loading" class="loading">
+            <div class="spinner"></div>
+            <p>Loading jobs...</p>
+          </div>
+
+          
+          <div *ngIf="error" class="error-message">
+            <div class="error-content">
+              <i class="bi bi-exclamation-circle"></i>
+              <span>{{ error }}</span>
+              <button class="retry-btn" (click)="fetchJobs()">
+                <i class="bi bi-arrow-clockwise"></i> Try Again
+              </button>
+            </div>
+          </div>
+
+          
+          <div *ngIf="!loading && !error" class="job-list">
+          <ng-container *ngIf="jobs && jobs.length > 0; else noJobs">
+            <div *ngFor="let job of filteredJobs; trackBy: trackByJobId" class="job-card" (click)="viewJobDetails(job)">
+              <h3>{{ job.title || 'No title' }}</h3>
+              <p class="job-description">
+                {{ (job.description || 'No description') | slice:0:150 }}{{ job.description && job.description.length > 150 ? '...' : '' }}
+              </p>
+              <div class="job-meta">
+                <span class="job-date" *ngIf="job.created_at">{{ job.created_at | date:'mediumDate' }}</span>
+              </div>
+              <div class="job-footer">
+                <span class="view-details">View Details →</span>
+              </div>
+            </div>
+          </ng-container>
+          
+          <ng-template #noJobs>
+            <div class="no-jobs">
+              <p>No jobs available at the moment. Please check back later.</p>
+            </div>
+          </ng-template>
+          
+          <div *ngIf="filteredJobs.length === 0 && jobs.length > 0" class="no-jobs">
+            <p>No jobs found matching your search.</p>
+          </div>
+        </div>
+      </div>
+      </div>
+
+      
+      <div *ngIf="activeTab === 'applications'" class="tab-content">
+        <app-applied-jobs></app-applied-jobs>
+      </div>
+    </div>
+  </main>
+</div>
+
+
+<div *ngIf="selectedJob" class="modal-overlay" (click)="closeJobDetails()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <button class="close-btn" (click)="closeJobDetails()">&times;</button>
+    <h2>{{ selectedJob.title }}</h2>
+    <div class="job-details">
+      <h3>Job Description</h3>
+      <p>{{ selectedJob.description }}</p>
+      
+      
+      
+      <div class="modal-actions">
+        <button class="apply-btn" (click)="applyForJob(selectedJob!)">Apply Now</button>
+        <button class="cancel-btn" (click)="closeJobDetails()">Close</button>
+      </div>
+    </div>
+  </div>
+</div>

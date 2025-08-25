@@ -1,0 +1,262 @@
+<div class="test-results-container">
+  
+  <div class="action-bar" *ngIf="!loading && !error && allTestResults?.results?.length">
+    <button (click)="openSendJobModal()" class="btn btn-primary" [disabled]="!hasSelectedStudents()">
+      <i class="fas fa-paper-plane"></i> Send Job to Selected ({{ selectedStudents.length }})
+    </button>
+  </div>
+
+  <div *ngIf="loading" class="loading-state">
+    <div class="spinner"></div>
+    <p>Loading test results...</p>
+  </div>
+
+  <div *ngIf="error" class="error-state">
+    <i class="fas fa-exclamation-circle"></i>
+    <p>{{ error }}</p>
+  </div>
+
+  <div *ngIf="viewMode === 'all' && allTestResults && !loading && !error" class="results-container">
+    <div class="results-header">
+      <h2><i class="fas fa-clipboard-list"></i> All Test Results</h2>
+      <div *ngIf="allTestResults.average_score !== undefined" class="average-score">
+        <span class="label">Average Score:</span>
+        <div class="score-badge" [ngClass]="getScoreBadgeClass(allTestResults.average_score)">
+          {{ allTestResults.average_score | number:'1.0-1' }}%
+        </div>
+      </div>
+    </div>
+    
+    <div class="results-content">
+      <div *ngIf="!allTestResults.results?.length" class="no-results">
+        <i class="fas fa-inbox"></i>
+        <p>No test results found</p>
+      </div>
+
+      <div *ngIf="allTestResults.results?.length">
+        <div class="results-grid">
+          <div class="grid-header">
+            <div class="grid-cell">#</div>
+            <div class="grid-cell">Student</div>
+            <div class="grid-cell">Email</div>
+            <div class="grid-cell">Test Date</div>
+            <div class="grid-cell">Status</div>
+            <div class="grid-cell">Score</div>
+            <div class="grid-cell">Actions</div>
+          </div>
+          
+          <div *ngFor="let result of allTestResults.results; let i = index" class="grid-row">
+            <div class="grid-cell">
+              <input type="checkbox" 
+                     [checked]="isStudentSelected(result.student?.email)"
+                     (change)="toggleStudentSelection(result.student?.email)">
+            </div>
+            <div class="grid-cell">{{ i + 1 }}</div>
+            <div class="grid-cell">
+              <i class="fas fa-user"></i>
+              <span>{{ result.student?.name || 'N/A' }}</span>
+            </div>
+            <div class="grid-cell email">{{ result.student?.email || 'N/A' }}</div>
+            <div class="grid-cell">{{ result.test ? formatTestTime(result.test.test_time) : 'N/A' }}</div>
+            <div class="grid-cell">
+              <span class="status-badge" [ngClass]="result.test ? getCompletionBadgeClass(!!result.test.is_completed) : 'inactive'">
+                {{ result.test ? (result.test.is_completed ? 'Completed' : 'In Progress') : 'Not Taken' }}
+              </span>
+            </div>
+            <div class="grid-cell">
+              <span class="score-badge" [ngClass]="result.test ? getScoreBadgeClass((result.test.score || 0) * 10) : 'inactive'">
+                {{ result.test ? (result.test.score + '/10') : 'N/A' }}
+              </span>
+            </div>
+            <div class="grid-cell">
+              <button *ngIf="result.test?.id !== undefined" 
+                      (click)="viewSingleResult(result.test!.id)" 
+                      class="action-btn"
+                      [class.disabled]="!result.test?.is_completed"
+                      [title]="result.test?.is_completed ? 'View detailed results' : 'Test not completed'">
+                {{ result.test?.is_completed ? 'View Details' : 'Incomplete' }}
+              </button>
+              <span *ngIf="!result.test" class="no-test">No test taken</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="results-footer">
+      <button routerLink="/admindashboard" class="back-btn">
+        <i class="fas fa-arrow-left"></i> Back to Dashboard
+      </button>
+    </div>
+  </div>
+
+  
+  <div *ngIf="viewMode === 'single' && testResults && !loading && !error" class="single-result-view">
+    
+    <div class="test-header">
+      <div class="header-content">
+        <h1><i class="fas fa-file-alt"></i> Test Results</h1>
+        <div class="test-score">
+          <span class="score-label">Final Score:</span>
+          <div class="score-value" [ngClass]="getScoreBadgeClass((testResults.test?.score || 0) * 10)">
+            {{ testResults.test?.score || 0 }}/10
+          </div>
+        </div>
+      </div>
+      <button routerLink="/admin/dashboard" class="back-btn">
+        <i class="fas fa-arrow-left"></i> Back to Dashboard
+      </button>
+    </div>
+
+    
+    <div class="summary-section">
+      <div class="info-card">
+        <h3><i class="fas fa-user-graduate"></i> Student Information</h3>
+        <div class="info-grid">
+          <div class="info-item">
+            <span class="info-label">Name:</span>
+            <span class="info-value">{{ testResults.student?.name || 'N/A' }}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Email:</span>
+            <span class="info-value">{{ testResults.student?.email || 'N/A' }}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Job Position:</span>
+            <span class="info-value">{{ testResults.job?.title || 'N/A' }}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Test Date:</span>
+            <span class="info-value">{{ formatTestTime(testResults.test?.test_time) || 'N/A' }}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Status:</span>
+            <span class="status-badge" [ngClass]="testResults.test?.is_completed ? 'completed' : 'in-progress'">
+              {{ testResults.test?.is_completed ? 'Completed' : 'In Progress' }}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      
+      <div class="score-summary">
+        <h3><i class="fas fa-chart-pie"></i> Performance Summary</h3>
+        <div class="score-details">
+          <div class="score-metric">
+            <div class="metric-value">
+              {{ getCorrectAnswersCount() }}/{{ testResults.test?.responses?.length || 0 }}
+            </div>
+            <div class="metric-label">Correct Answers</div>
+          </div>
+          <div class="score-metric">
+            <div class="metric-value">
+              {{ testResults.test?.score || 0 }}/10
+            </div>
+            <div class="metric-label">Total Score</div>
+          </div>
+          <div class="score-metric">
+            <div class="metric-value">
+              {{ ((testResults.test?.score || 0) * 10).toFixed(0) }}%
+            </div>
+            <div class="metric-label">Percentage</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    
+    <div class="questions-section">
+      <h3><i class="fas fa-question-circle"></i> Question Details</h3>
+      
+      <div *ngIf="!testResults.test?.responses?.length" class="no-questions">
+        <i class="fas fa-inbox"></i>
+        <p>No questions found for this test.</p>
+      </div>
+
+      <div class="questions-list">
+        <div *ngFor="let response of testResults.test?.responses; let i = index" 
+             class="question-card" 
+             [class.correct]="response.is_correct"
+             [class.incorrect]="!response.is_correct">
+          
+          <div class="question-header">
+            <div class="question-number">Question {{i + 1}}</div>
+            <span class="question-status" [ngClass]="{'correct': response.is_correct, 'incorrect': !response.is_correct}">
+              {{ response.is_correct ? 'Correct' : 'Incorrect' }}
+              <i [class]="response.is_correct ? 'fas fa-check' : 'fas fa-times'"></i>
+            </span>
+          </div>
+          
+          <p class="question-text">{{ response.question_text }}</p>
+          
+          <div class="answer-details">
+            <div class="answer-row">
+              <span class="answer-label">Your Answer:</span>
+              <span class="answer-value" [class.correct]="response.is_correct" [class.incorrect]="!response.is_correct">
+                Option {{ response.selected_option }}
+                <i [class]="response.is_correct ? 'fas fa-check' : 'fas fa-times'"></i>
+              </span>
+            </div>
+            
+            <div *ngIf="!response.is_correct" class="answer-row correct-answer">
+              <span class="answer-label">Correct Answer:</span>
+              <span class="answer-value">
+                Option {{ response.correct_option }}
+                <i class="fas fa-check"></i>
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  
+  <div class="modal" [class.show]="showJobModal">
+    <div class="modal-content">
+      <form #jobForm="ngForm" (ngSubmit)="sendJobDetails()">
+        <div class="modal-header">
+          <h3><i class="fas fa-briefcase"></i> Send Job Opportunity</h3>
+          <button type="button" class="close-btn" (click)="closeSendJobModal()">&times;</button>
+        </div>
+        <div class="modal-body">
+          <div class="form-group" *ngIf="testResults?.job?.title">
+            <label>Job</label>
+            <input type="text" class="form-control" [value]="testResults?.job?.title" readonly>
+            <small class="form-text text-muted">Job associated with the test results</small>
+          </div>
+          <div class="form-group">
+            <label for="jobTitle">Job Title</label>
+            <input type="text" id="jobTitle" name="jobTitle" 
+                   [(ngModel)]="jobDetails.title" 
+                   class="form-control"
+                   required>
+          </div>
+          <div class="form-group">
+            <label for="jobDate">Date</label>
+            <input type="date" id="jobDate" name="jobDate" [(ngModel)]="jobDetails.date" required>
+          </div>
+          <div class="form-group">
+            <label for="jobDescription">Description</label>
+            <textarea id="jobDescription" name="jobDescription" [(ngModel)]="jobDetails.description" rows="4"></textarea>
+          </div>
+          <div class="selected-students">
+            <h4>Selected Students ({{ selectedStudents.length }})</h4>
+            <ul>
+              <li *ngFor="let email of selectedStudents">{{ email }}</li>
+            </ul>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" (click)="closeSendJobModal()" [disabled]="sending">
+            Cancel
+          </button>
+          <button type="submit" class="btn btn-primary" [disabled]="sending || !jobForm.form.valid">
+            <span *ngIf="!sending">Send Job Details</span>
+            <span *ngIf="sending">Sending...</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

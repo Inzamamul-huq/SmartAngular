@@ -1,0 +1,79 @@
+<div class="signup-container">
+  <div class="signup-form">
+    <h2>Login</h2>
+    <form (ngSubmit)="onLogin()" #loginForm="ngForm">
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input 
+          type="email" 
+          id="email"
+          name="email"
+          [(ngModel)]="email" 
+          required 
+          email
+          #emailField="ngModel"
+          [class.is-invalid]="emailField.invalid && emailField.touched"
+          [disabled]="isLoading"
+        >
+        <div *ngIf="emailField.invalid && emailField.touched" class="error-message">
+          <div *ngIf="emailField.errors?.['required']">Email is required</div>
+          <div *ngIf="emailField.errors?.['email']">Please enter a valid email</div>
+        </div>
+      </div>
+      
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input 
+          type="password" 
+          id="password"
+          name="password"
+          [(ngModel)]="password" 
+          required 
+          minlength="6"
+          #passwordField="ngModel"
+          [class.is-invalid]="passwordField.invalid && passwordField.touched"
+          [disabled]="isLoading"
+        >
+        <div *ngIf="passwordField.invalid && passwordField.touched" class="error-message">
+          Password must be at least 6 characters
+        </div>
+      </div>
+      
+      <div *ngIf="errorMessage" class="error-message">
+        {{ errorMessage }}
+      </div>
+      
+      <button type="submit" [disabled]="loginForm.invalid || isLoading" class="btn-primary">
+        {{ isLoading ? 'Logging in...' : 'Login' }}
+      </button>
+      
+      <div class="forgot-password-link">
+        <a routerLink="/forgot-password">Forgot Password?</a>
+      </div>
+      
+      <div class="signup-link">
+        Not have an account? <a routerLink="/signup">Sign up as student</a>
+      </div>
+    
+    </form>
+  </div>
+  
+  <div class="welcome-text">
+    <h1>Welcome to Smart Recruit</h1>
+    <p>Access your admin dashboard to manage job postings and applications.</p>
+    <div class="features">
+      <div class="feature">
+        <i class="fas fa-users-cog"></i>
+        <span>Manage job postings</span>
+      </div>
+      <div class="feature">
+        <i class="fas fa-file-alt"></i>
+        <span>View applications</span>
+      </div>
+      <div class="feature">
+        <i class="fas fa-chart-pie"></i>
+        <span>Track statistics</span>
+      </div>
+    </div>
+  </div>
+</div>

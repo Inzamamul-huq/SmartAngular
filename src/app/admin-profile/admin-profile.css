@@ -1,0 +1,126 @@
+:host {
+  display: block;
+  padding: 5rem;
+}
+
+.admin-profile {
+  max-width: 520px;
+  margin: 0 auto;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.06);
+  padding: 2rem;
+}
+
+.admin-profile h2 {
+  margin: 0 0 0.25rem;
+  font-size: 1.5rem;
+  color: #1f2937;
+}
+
+.admin-profile p {
+  margin: 0 0 1.5rem;
+  color: #6b7280;
+}
+
+form {
+  display: grid;
+  gap: 1rem;
+}
+
+.field .input-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.field .input-wrap input {
+  flex: 1;
+}
+
+.field .toggle {
+  margin-left: 8px;
+  background: #f3f4f6;
+  color: #374151;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  padding: 0.5rem 0.6rem;
+  cursor: pointer;
+}
+
+.field .toggle:hover {
+  background: #e5e7eb;
+}
+
+label {
+  display: block;
+  margin-bottom: 0.4rem;
+  font-weight: 600;
+  color: #374151;
+}
+
+input[type="password"] {
+  width: 100%;
+  padding: 0.75rem 0.9rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  transition: box-shadow .2s, border-color .2s;
+}
+
+input[type="password"]:focus {
+  outline: none;
+  border-color: #4f46e5;
+  box-shadow: 0 0 0 3px rgba(79,70,229,0.15);
+}
+
+button[type="submit"] {
+  background: #4f46e5;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background .2s, transform .05s;
+}
+
+button[type="submit"]:hover:not([disabled]) {
+  background: #4338ca;
+}
+
+button[type="submit"]:active:not([disabled]) {
+  transform: translateY(1px);
+}
+
+button[disabled] {
+  opacity: .7;
+  cursor: not-allowed;
+}
+
+.success {
+  margin-top: 0.5rem;
+  color: #065f46;
+  background: #ecfdf5;
+  border: 1px solid #a7f3d0;
+  padding: 0.5rem 0.75rem;
+  border-radius: 8px;
+}
+
+.error {
+  margin-top: 0.5rem;
+  color: #991b1b;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  padding: 0.5rem 0.75rem;
+  border-radius: 8px;
+}
+
+.footer-link {
+  margin-top: 1rem;
+  display: inline-block;
+  color: #4f46e5;
+  text-decoration: none;
+}
+
+.footer-link:hover { text-decoration: underline; }

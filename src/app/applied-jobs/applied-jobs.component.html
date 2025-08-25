@@ -1,0 +1,447 @@
+<div class="applied-jobs-container">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>My Applications</h2>
+    <div class="btn-group" role="group">
+      <button type="button" 
+              class="btn btn-outline-primary" 
+              [class.active]="$any(activeTab) === 'applied'"
+              (click)="activeTab = 'applied'">
+        Applied Jobs
+      </button>
+      <button type="button" 
+              class="btn btn-outline-primary" 
+              [class.active]="$any(activeTab) === 'opportunities'"
+              (click)="activeTab = 'opportunities'">
+        Job Opportunities
+        <span *ngIf="jobOpportunities.length > 0" class="badge bg-danger ms-1">
+          {{ jobOpportunities.length }}
+        </span>
+      </button>
+    </div>
+  </div>
+ 
+  <div *ngIf="loading" class="loading">
+    <div class="spinner"></div>
+    <p>Loading your applications...</p>
+  </div>
+
+  <div *ngIf="error" class="error-message">
+    {{ error }}
+    <button (click)="fetchAppliedJobs()" class="btn btn-sm btn-outline-secondary">
+      Retry
+    </button>
+  </div>
+
+  <div *ngIf="$any(activeTab) === 'applied'">
+    <div *ngIf="loading" class="loading">Loading your applications...</div>
+    <div *ngIf="!loading && error" class="error-message">
+      {{ error }}
+      <button (click)="fetchAppliedJobs()" class="btn btn-sm btn-outline-secondary ms-2">Retry</button>
+    </div>
+    <div *ngIf="!loading && !error && appliedJobs.length === 0" class="no-applications">
+      <p>You haven't applied to any jobs yet.</p>
+      <a routerLink="/student-dashboard" class="btn btn-primary">Browse Jobs</a>
+    </div>
+  </div>
+
+  <div *ngIf="$any(activeTab) === 'opportunities' && !loading" class="opportunities-list">
+    <div *ngIf="jobOpportunities.length > 0" class="row">
+      <div *ngFor="let opp of jobOpportunities" class="col-md-6 mb-4">
+        <div class="card h-100 opportunity-card">
+          <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">Job Opportunity</h5>
+            <span class="badge" [ngClass]="opp.message_sent ? 'bg-success' : 'bg-warning text-dark'">
+              {{ opp.message_sent ? 'Sent' : 'Pending' }}
+            </span>
+          </div>
+          <div class="card-body">
+            <h6 class="card-subtitle mb-2 text-muted">{{ opp.title || 'Job Opportunity' }}</h6>
+            <p class="card-text">{{ (opp.description || 'No additional details provided.') | truncate:150 }}</p>
+            <p class="text-muted"><small>Sent on: {{ (opp.sent_at || opp.created_at) | date:'mediumDate' }}</small></p>
+            <h5 class="text-muted fw-bold" *ngIf="opp.job_date">
+              Job Date: {{ opp.job_date | date:'mediumDate' }}
+            </h5>
+          </div>
+          
+          <div class="card-footer bg-transparent d-flex justify-content-between">
+            <div>
+              <button class="btn btn-sm btn-outline-primary me-2" (click)="viewFullDetails(opp, $event)">
+                View Details
+              </button>
+              <button class="btn btn-sm btn-outline-success" (click)="openShareExperienceModal(opp)">
+                <i class="bi bi-share"></i> Share Experience
+              </button>
+            </div>
+        </div>
+      </div>
+    </div>
+    </div>
+    <div *ngIf="jobOpportunities.length === 0" class="text-center py-5">
+      <p>No job opportunities found.</p>
+    </div>
+  </div>
+
+  <ng-template #shareExperienceModal let-modal>
+    <div class="modal-header bg-primary text-white">
+      <h4 class="modal-title">Share Your Interview Experience</h4>
+      <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss()"></button>
+    </div>
+    <div class="modal-body">
+      <form [formGroup]="experienceForm" (ngSubmit)="submitExperience()">
+        <div class="mb-3">
+          <label class="form-label">Company Name</label>
+          <input type="text" class="form-control" formControlName="company_name" required>
+        </div>
+        
+        <div class="mb-3">
+          <label class="form-label">Division/Department</label>
+          <input type="text" class="form-control" formControlName="division_name" required>
+        </div>
+        
+        <div class="card mb-3">
+          <div class="card-header">
+            <div class="form-check form-switch">
+              <input class="form-check-input" type="checkbox" formControlName="aptitude_conducted">
+              <label class="form-check-label fw-bold">Aptitude Round Conducted</label>
+            </div>
+          </div>
+          <div class="card-body" *ngIf="experienceForm.get('aptitude_conducted')?.value">
+            <div class="mb-3">
+              <label class="form-label">Questions Asked</label>
+              <textarea class="form-control" rows="3" formControlName="aptitude_questions"></textarea>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Attachment (if any)</label>
+              <input type="file" class="form-control" (change)="onFileSelected($event, 'aptitude_attachment')">
+            </div>
+          </div>
+        </div>
+        
+        <div class="card mb-3">
+          <div class="card-header">
+            <div class="form-check form-switch">
+              <input class="form-check-input" type="checkbox" formControlName="technical_conducted">
+              <label class="form-check-label fw-bold">Technical Round Conducted</label>
+            </div>
+          </div>
+          <div class="card-body" *ngIf="experienceForm.get('technical_conducted')?.value">
+            <div class="mb-3">
+              <label class="form-label">Technical Questions</label>
+              <textarea class="form-control" rows="3" formControlName="technical_questions"></textarea>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Attachment (if any)</label>
+              <input type="file" class="form-control" (change)="onFileSelected($event, 'technical_attachment')">
+            </div>
+          </div>
+        </div>
+        
+        <div class="card mb-3">
+          <div class="card-header">
+            <div class="form-check form-switch">
+              <input class="form-check-input" type="checkbox" formControlName="gd_conducted">
+              <label class="form-check-label fw-bold">Group Discussion Round Conducted</label>
+            </div>
+          </div>
+          <div class="card-body" *ngIf="experienceForm.get('gd_conducted')?.value">
+            <div class="mb-3">
+              <label class="form-label">Discussion Topics</label>
+              <textarea class="form-control" rows="3" formControlName="gd_topics"></textarea>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Attachment (if any)</label>
+              <input type="file" class="form-control" (change)="onFileSelected($event, 'gd_attachment')">
+            </div>
+          </div>
+        </div>
+        
+        <div class="card mb-3">
+          <div class="card-header">
+            <div class="form-check form-switch">
+              <input class="form-check-input" type="checkbox" formControlName="hr_conducted">
+              <label class="form-check-label fw-bold">HR Round Conducted</label>
+            </div>
+          </div>
+          <div class="card-body" *ngIf="experienceForm.get('hr_conducted')?.value">
+            <div class="mb-3">
+              <label class="form-label">HR Questions</label>
+              <textarea class="form-control" rows="3" formControlName="hr_questions"></textarea>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Attachment (if any)</label>
+              <input type="file" class="form-control" (change)="onFileSelected($event, 'hr_attachment')">
+            </div>
+          </div>
+        </div>
+        
+        <div class="mb-3">
+          <label class="form-label">Tips & Advice for Future Candidates</label>
+          <textarea class="form-control" rows="3" formControlName="tips" placeholder="Share any tips or advice for future candidates..."></textarea>
+        </div>
+        
+        <div class="mb-3">
+          <label class="form-label">Overall Experience</label>
+          <textarea class="form-control" rows="3" formControlName="overall_experience" required placeholder="Describe your overall interview experience..."></textarea>
+        </div>
+        
+        <div class="d-flex justify-content-end gap-2">
+          <button type="button" class="btn btn-secondary" (click)="modal.dismiss()">Cancel</button>
+          <button type="submit" class="btn btn-primary" [disabled]="!experienceForm.valid || isSubmitting">
+            <span *ngIf="isSubmitting" class="spinner-border spinner-border-sm me-1"></span>
+            {{ isSubmitting ? 'Submitting...' : 'Share Experience' }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </ng-template>
+
+  <ng-template #opportunityModal let-modal>
+    <div class="modal-header bg-primary text-white">
+      <h4 class="modal-title">Job Opportunity Details</h4>
+    </div>
+    <div class="modal-body">
+      <div *ngIf="selectedOpportunity">
+        <div class="alert alert-info">
+          <i class="bi bi-info-circle me-2"></i>
+          This is a job opportunity that was shared with you.
+        </div>
+        
+        <h4>{{ selectedOpportunity.job_title || 'Job Opportunity' }}</h4>
+        
+        <div class="row mb-3">
+          <div class="col-md-4">
+            <h6>Status</h6>
+            <span class="badge" [ngClass]="selectedOpportunity.message_sent ? 'bg-success' : 'bg-warning text-dark'">
+              {{ selectedOpportunity.message_sent ? 'Opportunity Sent' : 'Pending' }}
+            </span>
+          </div>
+          <div class="col-md-4">
+            <h6>Sent On</h6>
+            <p>{{ (selectedOpportunity.sent_at || selectedOpportunity.created_at) | date:'medium' }}</p>
+          </div>
+          <div class="col-md-4" *ngIf="selectedOpportunity.job_date">
+            <h6>Job Date</h6>
+            <p>{{ selectedOpportunity.job_date | date:'mediumDate' }}</p>
+          </div>
+        </div>
+        
+        <div class="mb-3">
+          <h6>Description</h6>
+          <p>{{ selectedOpportunity.description || 'No description provided.' }}</p>
+        </div>
+        
+        <div class="mb-3">
+          <h6>Recipient Email</h6>
+          <p>{{ selectedOpportunity.student_email }}</p>
+        </div>
+        
+        <div class="mb-3" *ngIf="selectedOpportunity.message">
+          <h6>Message</h6>
+          <div class="p-3 bg-light rounded">
+            {{ selectedOpportunity.message }}
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-secondary" (click)="modal.close()">Close</button>
+    </div>
+  </ng-template>
+
+  <div *ngIf="$any(activeTab) === 'applied' && !loading && !error && appliedJobs.length > 0" class="applications-list">
+    <div *ngFor="let app of appliedJobs" class="application-card">
+      <div class="application-header">
+        <h3>{{ app.job.title }}</h3>
+        <span class="badge {{ getStatusBadgeClass(app.status) }}">
+          {{ app.status | titleCase:'_' }}
+        </span>
+      </div>
+      
+      <div class="application-details">
+        <p class="job-description">{{ app.job.description | slice:0:200 }}{{ app.job.description.length > 200 ? '...' : '' }}</p>
+        <p><strong>Applied:</strong> {{ app.applied_at | date:'mediumDate' }}</p>
+        
+        <div *ngIf="app.test_info" class="test-schedule">
+          <p><strong>Test Scheduled:</strong> {{ app.test_info.test_time | date:'medium' }}</p>
+          <p *ngIf="app.test_info.is_completed && app.test_info.score !== null">
+            <strong>Score:</strong> {{ app.test_info.score }}%
+          </p>
+          <div *ngIf="app.status === 'test_scheduled'">
+            <button 
+              *ngIf="app.test_info && !app.test_info.is_completed"
+              [disabled]="!canStartTest(app)"
+              (click)="showTestInstructions(app)"
+              class="btn btn-primary btn-sm me-2"
+              [title]="!canStartTest(app) ? getTestAvailabilityMessage(app) : 'Click to start the test'"
+            >
+              {{ canStartTest(app) ? 'Start Test' : getTestAvailabilityMessage(app) }}
+            </button>
+            
+            <!-- Test Instructions Modal -->
+            <ng-template #testInstructionsModal let-modal>
+              <div class="modal-header">
+                <h4 class="modal-title">Important Test Instructions</h4>
+                <button type="button" class="btn-close" (click)="modal.dismiss()" aria-label="Close"></button>
+              </div>
+              <div class="modal-body">
+                <div class="alert alert-warning">
+                  <h5><i class="bi bi-exclamation-triangle-fill me-2"></i>Important Notice</h5>
+                  <div class="mb-3">
+                    <p class="mb-1"><strong>Test Duration:</strong> 
+                      <span *ngIf="getTestDuration() !== null; else noDuration">
+                        {{getTestDuration()}} minutes
+                      </span>
+                      <ng-template #noDuration>
+                        <span class="text-danger">Duration not specified</span>
+                      </ng-template>
+                    </p>
+                    <p class="mb-0">Please read the following instructions carefully before starting the test:</p>
+                  </div>
+                  <ul class="mb-0">
+                    <li>⛔ <strong>DO NOT</strong> press the <kbd>Windows</kbd> key during the test - it will be blocked and may lead to test auto-submission</li>
+                    <li>⛔ <strong>DO NOT</strong> exit fullscreen mode - pressing <kbd>Esc</kbd> will auto-submit your test</li>
+                    <li>⛔ <strong>DO NOT</strong> refresh the page or use browser navigation during the test</li>
+                    <li>⏱️ The test will be automatically submitted when time runs out</li>
+                    <li>📝 Your progress is saved automatically</li>
+                    <li>🚫 Switching tabs or windows will be detected and may result in test submission</li>
+                  </ul>
+                </div>
+                <div class="form-check mb-3">
+                  <input class="form-check-input" type="checkbox" id="confirmInstructions" [(ngModel)]="confirmedInstructions">
+                  <label class="form-check-label" for="confirmInstructions">
+                    I have read and understood all the instructions above
+                  </label>
+                </div>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" (click)="modal.dismiss()">Cancel</button>
+                <button 
+                  type="button" 
+                  class="btn btn-primary" 
+                  [disabled]="!confirmedInstructions"
+                  (click)="startTest(selectedTestJob); modal.close()"
+                >
+                  I Understand - Start Test
+                </button>
+              </div>
+            </ng-template>
+            <div *ngIf="app.test_info?.is_completed" class="test-completed">
+              Test Completed
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-3" *ngIf="app.status === 'selected'">
+          <button (click)="showJobDetails(app)" class="btn btn-outline-primary btn-sm">
+            View Job Details
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #jobDetailsModal let-modal>
+  <div class="modal-header">
+    <h5 class="modal-title">
+      {{ selectedJob?.title || 'Job Details' }}
+      <span *ngIf="selectedApplication" class="badge ms-2 {{ getStatusBadgeClass(selectedApplication.status) }}">
+        {{ selectedApplication.status | titleCase:'_' }}
+      </span>
+    </h5>
+    <button type="button" class="btn-close" (click)="modal.dismiss('Cross click')" aria-label="Close"></button>
+  </div>
+  <div class="modal-body">
+    <div *ngIf="!selectedJob" class="text-center py-4">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+      <p class="mt-2">Loading job details...</p>
+    </div>
+    
+    <div *ngIf="selectedJob">
+      <h6>Job Description</h6>
+      <p class="mb-4">{{ selectedJob.description || 'No description available' }}</p>
+      
+      <div class="row">
+        <div class="col-md-6">
+          <p><strong>Posted On:</strong> {{ (selectedJob.created_at | date:'mediumDate') || 'N/A' }}</p>
+          <p *ngIf="selectedApplication"><strong>Applied On:</strong> {{ selectedApplication.applied_at | date:'mediumDate' }}</p>
+        </div>
+        <div class="col-md-6">
+          <p *ngIf="selectedJob.job_date"><strong>Job Date:</strong> {{ selectedJob.job_date | date:'mediumDate' }}</p>
+          <p *ngIf="selectedJob.created_by"><strong>Posted By:</strong> {{ selectedJob.created_by }}</p>
+        </div>
+      </div>
+      
+      <div class="mt-4">
+        <div *ngIf="selectedJob.requirements || selectedJob.responsibilities">
+          <div *ngIf="selectedJob.requirements" class="mb-3">
+            <h6>Requirements</h6>
+            <div class="p-3 bg-light rounded">
+              {{ selectedJob.requirements }}
+            </div>
+          </div>
+          
+          <div *ngIf="selectedJob.responsibilities" class="mb-3">
+            <h6>Responsibilities</h6>
+            <div class="p-3 bg-light rounded">
+              {{ selectedJob.responsibilities }}
+            </div>
+          </div>
+        </div>
+        
+        <div class="mt-4 border-top pt-3">
+          <h5>Job Opportunities</h5>
+          
+          <div *ngIf="selectedJob.opportunities?.length" class="mb-4">
+            <h6>Message History</h6>
+            <div class="list-group">
+              <div *ngFor="let opp of selectedJob.opportunities" class="list-group-item">
+                <div class="d-flex w-100 justify-content-between">
+                  <h6 class="mb-1">Sent to {{ opp.student_email }}</h6>
+                  <small class="text-muted">{{ opp.sent_at | date:'medium' }}</small>
+                </div>
+                <p class="mb-1">{{ opp.description }}</p>
+              </div>
+            </div>
+          </div>
+          
+          <div *ngIf="!showMessageForm && selectedApplication" class="text-center">
+            <button class="btn btn-primary" (click)="showMessageForm = true">
+              <i class="bi bi-envelope-plus"></i> Send Job Opportunity
+            </button>
+          </div>
+          
+          <div *ngIf="showMessageForm" class="mt-3 p-3 border rounded">
+            <h6>Send Job Opportunity</h6>
+            <div class="mb-3">
+              <label class="form-label">Message</label>
+              <textarea 
+                class="form-control" 
+                rows="4" 
+                [value]="messageContent"
+                (input)="messageContent = ($any($event.target)?.value ?? '')"
+                [disabled]="isSending"
+                placeholder="Enter your message here...">
+              </textarea>
+              <div *ngIf="messageError" class="text-danger small mt-1">{{ messageError }}</div>
+            </div>
+            <div class="d-flex justify-content-between">
+              <button class="btn btn-outline-secondary" (click)="showMessageForm = false" [disabled]="isSending">
+                Cancel
+              </button>
+              <button class="btn btn-primary" (click)="sendJobOpportunity()" [disabled]="!messageContent.trim() || isSending">
+                <span *ngIf="isSending" class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
+                {{ isSending ? 'Sending...' : 'Send Message' }}
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-secondary" (click)="modal.close('Close click')">Close</button>
+  </div>
+</ng-template>

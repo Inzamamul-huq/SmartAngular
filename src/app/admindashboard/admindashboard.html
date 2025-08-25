@@ -1,0 +1,703 @@
+<div class="background">
+  <div class="admin-dashboard">
+    <header class="admin-header">
+      <div class="header-left">
+        <h1>Admin Dashboard</h1>
+        <div class="user-info" *ngIf="user">
+          <i class="fas fa-user-circle"></i>
+          <span>{{ user.name || user.email }}</span>
+        </div>
+      </div>
+     
+      <button (click)="logout()" class="btn btn-logout" title="Logout">
+        <i class="fas fa-sign-out-alt"></i> Logout
+      </button>
+    </header>
+
+    <nav class="admin-nav">
+      <button 
+        [class.active]="activeTab === 'users'" 
+        (click)="setActiveTab('users')"
+        class="nav-tab"
+      >
+        <i class="fas fa-users"></i> Manage Users
+      </button>
+      <button 
+        [class.active]="activeTab === 'postJob'" 
+        (click)="setActiveTab('postJob')"
+        class="nav-tab"
+      >
+        <i class="fas fa-briefcase"></i> Post New Job
+      </button>
+      <button 
+        [class.active]="activeTab === 'jobList'" 
+        (click)="setActiveTab('jobList')"
+        class="nav-tab"
+      >
+        <i class="fas fa-list"></i> Job List
+      </button>
+      <a routerLink="/admin/profile" class="nav-tab" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" title="Profile">
+        <i class="fas fa-user-cog"></i> Profile
+      </a>
+      <a routerLink="/admin/experiences" class="nav-tab" routerLinkActive="active" title="Interview Experiences">
+        <i class="fas fa-comment-dots"></i> Interview Experiences
+      </a>
+    </nav>
+
+    <main class="admin-content">
+     
+      <div *ngIf="activeTab === 'users'" class="tab-content">
+        <div class="section-header">
+          <div class="section-title">
+            <i class="fas fa-users"></i>
+            <h2>Registered Users</h2>
+            <span class="badge">{{students.length}} users</span>
+          </div>
+          <button (click)="fetchStudents()" class="btn btn-refresh">
+            <i class="fas fa-sync"></i> Refresh List
+          </button>
+        </div>
+
+        <div *ngIf="error" class="alert alert-error">
+          <i class="fas fa-exclamation-circle"></i> {{ error }}
+        </div>
+
+        <div *ngIf="students.length === 0" class="empty-state">
+          <div class="empty-state-content">
+            <i class="fas fa-user-slash"></i>
+            <h3>No Users Found</h3>
+            <p>There are no registered users to display.</p>
+          </div>
+        </div>
+
+        <div *ngIf="students.length > 0" class="users-table-container">
+          <div class="table-actions">
+            <div class="search-box">
+              <i class="fas fa-search"></i>
+              <input type="text" placeholder="Search users...">
+            </div>
+          </div>
+          
+          <div class="table-responsive">
+            <table class="users-table">
+              <thead>
+                <tr>
+                  <th class="user-info">User</th>
+                  <th>Contact</th>
+                  <th>Permission</th>
+                  <th>Status</th>
+                  <th>View resume</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let student of students">
+                  <td class="user-info">
+                    <div class="user-avatar">
+                      {{ (student.name || 'U')[0].toUpperCase() }}
+                    </div>
+                    <div class="user-details">
+                      <span class="user-name">{{ student.name || 'Unnamed User' }}</span>
+                      <span class="user-email">{{ student.email || 'No email' }}</span>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="contact-info">
+                      <div class="contact-item">
+                        <i class="fas fa-phone"></i>
+                        <span>{{ student.phone || 'No phone' }}</span>
+                      </div>
+                      <div class="contact-item">
+                        <i class="fas fa-envelope"></i>
+                        <span>{{ student.email || 'No email' }}</span>
+                      </div>
+                    </div>
+                  </td>
+                
+                  <td class="actions">
+                    <div class="toggle-switch">
+                      <input 
+                        type="checkbox" 
+                        [id]="'toggle-' + student.id" 
+                        [checked]="student.allow === 'allow'"
+                        (change)="toggleUserApproval(student, $event)"
+                        class="toggle-input"
+                      >
+                      <label [for]="'toggle-' + student.id" class="toggle-label">
+                        <span class="toggle-handle"></span>
+                      </label>
+                    </div></td>
+                    <td>
+                      <div class="status-cell">
+                       
+                        <div class="approval-status" [class.approved]="student.allow === 'allow'" [class.pending]="!student.allow">
+                          {{ student.allow === 'allow' ? 'Approved' : 'Pending' }}
+                        </div>
+                      </div>
+                    </td>
+                    <td>
+                    <a *ngIf="student.resume" 
+                      href="https://smartrecruit-l27g.onrender.com{{ student.resume }}" 
+                      target="_blank" 
+                      
+                      title="View Resume">
+                      <i class="fas fa-file-pdf"></i>
+                      
+                   
+                   
+                   <span class="approval-status">view resume</span> </a> </td>
+                  </tr>
+              </tbody>
+            </table>
+          </div>
+          
+          <div class="table-footer">
+            <div class="table-info">
+              Showing <strong>{{students.length}}</strong> of <strong>{{students.length}}</strong> users
+            </div>
+            <div class="pagination">
+              <button class="btn btn-sm" [disabled]="true">
+                <i class="fas fa-chevron-left"></i>
+              </button>
+              <span>1</span>
+              <button class="btn btn-sm">
+                <i class="fas fa-chevron-right"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      
+      <div *ngIf="activeTab === 'postJob'" class="tab-content">
+        <div class="section-header">
+          <h2><i class="fas fa-briefcase"></i> Post New Job</h2>
+        </div>
+
+        <form (ngSubmit)="postJob()" class="job-form">
+          <div *ngIf="postSuccess" class="success-message" style="margin-bottom: 20px;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+              <polyline points="22 4 12 14.01 9 11.01"></polyline>
+            </svg>
+            <h3>Job Posted Successfully</h3>
+            <p>The job has been added to the listings</p>
+          </div>
+
+          <div *ngIf="postError" class="alert alert-error">
+            <i class="fas fa-exclamation-circle"></i> {{ postError }}
+          </div>
+
+          <div class="form-group">
+            <label for="jobTitle">Job Title</label>
+            <input 
+              type="text" 
+              id="jobTitle" 
+              [(ngModel)]="jobPost.title" 
+              name="title"
+              placeholder="Enter job title"
+              required
+            >
+          </div>
+
+          <div class="form-group">
+            <label for="jobDescription">Job Description</label>
+            <textarea 
+              id="jobDescription" 
+              [(ngModel)]="jobPost.description" 
+              name="description"
+              rows="6"
+              placeholder="Enter job description"
+              required
+            ></textarea>
+          </div>
+
+          <div class="form-actions">
+            <button 
+              type="submit" 
+              class="btn btn-primary"
+              [disabled]="postingJob"
+            >
+              <span *ngIf="!postingJob">
+                <i class="fas fa-paper-plane"></i> Post Job
+              </span>
+              <span *ngIf="postingJob">
+                <i class="fas fa-spinner fa-spin"></i> Posting...
+              </span>
+            </button>
+          </div>
+        </form>
+      </div>
+
+      
+      <div *ngIf="activeTab === 'jobList'" class="job-list-container">
+        <div class="section-header">
+          <h2>Job Listings</h2>
+          <div class="action-buttons">
+           
+            <button (click)="fetchJobs()" class="btn btn-secondary" [disabled]="jobsLoading">
+              <i class="fas fa-sync-alt" [class.fa-spin]="jobsLoading"></i> {{ jobsLoading ? 'Loading...' : 'Refresh' }}
+            </button>
+          </div>
+        </div>
+        
+        <div *ngIf="error" class="alert alert-error">
+          <i class="fas fa-exclamation-circle"></i> {{ error }}
+          <button (click)="error = null" class="close-btn">&times;</button>
+        </div>
+
+        <div *ngIf="jobsLoading" class="loading-container">
+          <div class="spinner"></div>
+          <p>Loading jobs...</p>
+        </div>
+
+        <div *ngIf="!jobsLoading && jobs.length === 0 && !error" class="no-data">
+          <i class="fas fa-briefcase"></i>
+          <p>No jobs found</p>
+          <button (click)="navigateTo('post-job')" class="btn btn-primary">
+            <i class="fas fa-plus"></i> Post Your First Job
+          </button>
+        </div>
+
+        <div *ngIf="!jobsLoading && jobs.length > 0" class="jobs-grid" >
+          <div *ngFor="let job of jobs" class="job-card" (click)="viewApplicants(job)">
+            <div class="job-header">
+              <h3 (click)="viewApplicants(job)">{{ job.title }}</h3>
+              <div class="job-actions">
+                <button (click)="editJob(job, $event)" class="btn-icon" title="Edit Job">
+                  <i class="fas fa-edit"></i>
+                </button>
+                <button (click)="deleteJob(job.id, $event)" class="btn-icon btn-delete" title="Delete Job">
+                  <i class="fas fa-trash-alt"></i>
+                </button>
+                <span class="job-date">
+                  <i class="far fa-calendar-alt"></i> {{ job.created_at | date:'mediumDate' }}
+                </span>
+              </div>
+            </div>
+            <p class="job-description" (click)="viewApplicants(job)">{{ job.description | truncate:150 }}</p>
+            <div class="job-footer">
+              <span class="applicants-count" (click)="viewApplicants(job)">
+                <i class="fas fa-users"></i> {{ job.applicants_count || 0 }} Applicants
+              </span>
+              <div class="job-actions">
+                <button (click)="$event.stopPropagation(); viewApplicants(job)" class="btn btn-sm btn-view">
+                  <i class="fas fa-users"></i> View Applicants
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+   
+    
+  <div class="modal-overlay" *ngIf="showScheduleTestModal" (click)="closeScheduleModal()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h3>Schedule Test for {{selectedJob?.title}}</h3>
+        <button class="close-btn" (click)="closeScheduleModal()" [disabled]="schedulingTest">&times;</button>
+      </div>
+      
+      <div class="modal-body">
+        <form (ngSubmit)="scheduleTest()" #scheduleForm="ngForm">
+          <div class="form-group">
+            <label for="testTime">Test Date & Time</label>
+            <input 
+              type="datetime-local" 
+              id="testTime" 
+              name="testTime"
+              [(ngModel)]="testSchedule.test_time"
+              class="form-control"
+              [min]="minTestTime"
+              required
+              [disabled]="schedulingTest"
+            >
+            <small class="form-text text-muted">Test must be scheduled at least 1 hour from now</small>
+          </div>
+          
+          <div class="form-group">
+            <label for="testDuration">Test Duration (minutes)</label>
+            <input 
+              type="number" 
+              id="testDuration"
+              name="testDuration"
+              [(ngModel)]="testSchedule.duration_minutes"
+              class="form-control"
+              min="1"
+              max="240"
+              [value]="testSchedule.duration_minutes || 60"
+              required
+              [disabled]="schedulingTest"
+            >
+            <small class="form-text text-muted">Enter duration in minutes (1-240 minutes)</small>
+          </div>
+          
+          <div class="form-row">
+            <div class="form-group col-md-6">
+              <label for="testType">Test Type</label>
+              <select 
+                id="testType" 
+                name="testType" 
+                [(ngModel)]="testSchedule.test_type"
+                class="form-control"
+                required
+                [disabled]="schedulingTest"
+              >
+                <option value="CODING">Coding Test</option>
+                <option value="MCQ">Multiple Choice</option>
+                <option value="ESSAY">Essay</option>
+                <option value="PRACTICAL">Practical Test</option>
+              </select>
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label for="testLink">Test Link</label>
+            <input 
+              type="url" 
+              id="testLink" 
+              name="testLink" 
+              [(ngModel)]="testSchedule.test_link"
+              class="form-control"
+              placeholder="https://your-test-platform.com/test/unique-id"
+              required
+              [disabled]="schedulingTest"
+            >
+            <small class="form-text text-muted">Enter the full URL where candidates will take the test</small>
+          </div>
+          
+          <div class="form-group">
+            <label for="message">Message to Candidate</label>
+            <textarea 
+              id="message" 
+              name="message" 
+              [(ngModel)]="testSchedule.message"
+              class="form-control" 
+              rows="6"
+              required
+              [disabled]="schedulingTest"
+            ></textarea>
+            <small class="form-text text-muted">This message will be sent to all selected candidates</small>
+          </div>
+
+          <div *ngIf="scheduleError" class="alert alert-error">
+            <i class="fas fa-exclamation-circle"></i> {{ scheduleError }}
+          </div>
+          
+          <div *ngIf="scheduleSuccess" class="alert alert-success">
+            <i class="fas fa-check-circle"></i> {{ scheduleSuccess }}
+          </div>
+
+          <div class="form-actions">
+            <button 
+              type="button" 
+              class="btn btn-secondary" 
+              (click)="closeScheduleModal()"
+              [disabled]="schedulingTest"
+            >
+              Cancel
+            </button>
+            <button 
+              type="submit" 
+              class="btn btn-primary"
+              [disabled]="schedulingTest || !scheduleForm.form.valid"
+            >
+              <span *ngIf="!schedulingTest">
+                <i class="fas fa-calendar-check"></i> Schedule Test
+              </span>
+              <span *ngIf="schedulingTest">
+                <i class="fas fa-spinner fa-spin"></i> Scheduling...
+              </span>
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  </div>
+
+
+  <div *ngIf="activeTab === 'jobApplicants' && selectedJob" class="admin-dashboard">
+    <main class="admin-content">
+      <div class="tab-content">
+        <div class="section-header">
+          <div class="section-header-left">
+            <button (click)="goBackToJobs()" class="btn btn-back">
+              <i class="fas fa-arrow-left"></i> Back to Jobs
+            </button>
+            <h2>Applicants for {{ selectedJob.title }}</h2>
+          </div>
+          <div class="section-header-actions">
+            <div class="shortlisted-info" *ngIf="hasShortlistedApplicants()">
+              <span class="shortlisted-count">
+                <i class="fas fa-users"></i> 
+                {{ getShortlistedCount() }} shortlisted
+              </span>
+              <button 
+                (click)="openScheduleModal()" 
+                class="btn btn-primary"
+                [disabled]="!canScheduleTest(selectedJob)"
+                title="Schedule test for all shortlisted applicants"
+              >
+                <i class="fas fa-calendar-alt"></i> Schedule Test
+              </button>
+            </div>
+            <button 
+              *ngIf="selectedJob"
+              [routerLink]="['/admin/job', selectedJob.id, 'questions']"
+              class="btn btn-primary me-2"
+              title="View and manage questions for this job"
+            >
+              <i class="fas fa-list"></i> View Questions
+            </button>
+            <button 
+              *ngIf="selectedJob"
+              [routerLink]="['/admin/job', selectedJob.id, 'questions']"
+              [queryParams]="{addNew: 'true'}"
+              class="btn btn-outline-primary me-2"
+              title="Add a new question to this job's test"
+            >
+              <i class="fas fa-plus"></i> Add Question
+            </button>
+            <button 
+              (click)="selectedJob && viewApplicants(selectedJob)" 
+              class="btn btn-refresh"
+              title="Refresh applicants list"
+            >
+              <i class="fas fa-sync"></i> Refresh
+            </button>
+          </div>
+        </div>
+
+        <div *ngIf="error" class="alert alert-error">
+          <i class="fas fa-exclamation-circle"></i> {{ error }}
+        </div>
+
+        <div *ngIf="selectedJob && selectedJob.applicants && selectedJob.applicants.length === 0" class="empty-state">
+          <i class="fas fa-user-slash"></i>
+          <p>No applicants found for this job</p>
+          <button (click)="selectedJob && viewApplicants(selectedJob)" class="btn btn-primary mt-2">
+            <i class="fas fa-sync"></i> Refresh
+          </button>
+        </div>
+
+        <div *ngIf="selectedJob?.applicants?.length" class="applicants-table-container">
+          <div class="d-flex justify-content-between align-items-center mb-4">
+            <h4 class="mb-0">Job Applicants</h4>
+            <div class="d-flex gap-2">
+              <button class="btn btn-info text-white" (click)="viewAllTestResults()" [disabled]="!(selectedJob && selectedJob.applicants && selectedJob.applicants.length)">
+                <i class="fas fa-chart-bar me-2"></i> View All Results
+              </button>
+            
+            </div>
+          </div>
+          <table class="applicants-table">
+            <thead>
+              <tr>
+                <th class="text-center">
+                  <input 
+                    type="checkbox" 
+                    [checked]="selectAllApplicants"
+                    (change)="toggleSelectAll()"
+                    class="select-all-checkbox"
+                  >
+                </th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Applied On</th>
+                <th>Resume</th>
+                <th>Shortlist Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let applicant of selectedJob.applicants">
+                <td class="text-center">
+                  <input 
+                    type="checkbox" 
+                    [checked]="applicant.is_shortlisted"
+                    (change)="toggleShortlist(applicant)"
+                    class="select-checkbox"
+                  >
+                </td>
+                <td>{{ applicant.name }}</td>
+                <td>{{ applicant.email }}</td>
+                <td>{{ applicant.applied_at | date:'medium' }}</td>
+                <td>
+                  <button *ngIf="applicant.resume && applicant.student_id" (click)="viewResume(applicant); $event.stopPropagation()" class="btn btn-sm btn-view">
+                    <i class="fas fa-eye"></i> View Resume
+                  </button>
+                  <span *ngIf="!applicant.resume">No resume</span>
+                </td>
+               
+                <td class="text-center">
+                  <span class="status-badge" [class.shortlisted]="applicant.is_shortlisted">
+                    {{ applicant.is_shortlisted ? 'Shortlisted' : 'Not Shortlisted' }}
+                  </span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </main>
+  </div>
+  
+ 
+  <div class="modal-overlay" *ngIf="showQuestionsList" (click)="closeQuestionModal()">
+    <div class="modal-content" (click)="$event.stopPropagation()" style="max-width: 800px;">
+      <div class="modal-header">
+        <h3>Questions for {{ selectedJob?.title || 'Job' }}</h3>
+        <button class="close-btn" (click)="closeQuestionModal()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div *ngIf="questionsLoading" class="loading-container">
+          <div class="spinner"></div>
+          <p>Loading questions...</p>
+        </div>
+        
+        <div *ngIf="!questionsLoading && jobQuestions.length === 0" class="no-questions">
+          <p>No questions found for this job.</p>
+        </div>
+        
+        <div *ngIf="!questionsLoading && jobQuestions.length > 0" class="questions-list">
+          <div *ngFor="let question of jobQuestions; let i = index" class="question-card">
+            <div class="question-header">
+              <h4>Question {{ i + 1 }}</h4>
+              <span class="correct-answer">Correct Answer: {{ question['option' + question.correct_option] }}</span>
+            </div>
+            <p class="question-text">{{ question.question_text }}</p>
+            <div class="options-grid">
+              <div class="option">
+                <strong>A.</strong> {{ question.option1 }}
+                <span *ngIf="question.correct_option === 1" class="correct-indicator">✓</span>
+              </div>
+              <div class="option">
+                <strong>B.</strong> {{ question.option2 }}
+                <span *ngIf="question.correct_option === 2" class="correct-indicator">✓</span>
+              </div>
+              <div class="option">
+                <strong>C.</strong> {{ question.option3 }}
+                <span *ngIf="question.correct_option === 3" class="correct-indicator">✓</span>
+              </div>
+              <div class="option">
+                <strong>D.</strong> {{ question.option4 }}
+                <span *ngIf="question.correct_option === 4" class="correct-indicator">✓</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button (click)="closeQuestionModal()" class="btn btn-secondary">Close</button>
+      </div>
+    </div>
+  </div>
+
+  
+  <div class="modal-overlay" *ngIf="showQuestionModal" (click)="closeQuestionModal()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h3>Add New Question</h3>
+        <button class="close-btn" (click)="closeQuestionModal()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div *ngIf="questionError" class="error-message" style="margin-bottom: 20px;">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="12" y1="8" x2="12" y2="12"></line>
+            <line x1="12" y1="16" x2="12.01" y2="16"></line>
+          </svg>
+          <h3>Error Adding Question</h3>
+          <p>{{ questionError }}</p>
+        </div>
+        <div *ngIf="questionSuccess" class="success-message" style="margin-bottom: 20px;">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+            <polyline points="22 4 12 14.01 9 11.01"></polyline>
+          </svg>
+          <h3>Question Added Successfully</h3>
+          <p>The question has been added to the test</p>
+        </div>
+        
+        <form (ngSubmit)="addQuestion()" #questionForm="ngForm" class="question-form">
+          <div class="form-group">
+            <label for="questionText">Question Text</label>
+            <textarea 
+              id="questionText" 
+              name="questionText" 
+              [(ngModel)]="newQuestion.question_text" 
+              class="form-control" 
+              rows="3" 
+              required>
+            </textarea>
+          </div>
+          
+          <div class="form-group">
+            <label>Options</label>
+            <div class="option-group">
+              <label>Option 1:</label>
+              <input 
+                type="text" 
+                [(ngModel)]="newQuestion.option1" 
+                name="option1" 
+                class="form-control" 
+                required>
+            </div>
+            <div class="option-group">
+              <label>Option 2:</label>
+              <input 
+                type="text" 
+                [(ngModel)]="newQuestion.option2" 
+                name="option2" 
+                class="form-control" 
+                required>
+            </div>
+            <div class="option-group">
+              <label>Option 3:</label>
+              <input 
+                type="text" 
+                [(ngModel)]="newQuestion.option3" 
+                name="option3" 
+                class="form-control" 
+                required>
+            </div>
+            <div class="option-group">
+              <label>Option 4:</label>
+              <input 
+                type="text" 
+                [(ngModel)]="newQuestion.option4" 
+                name="option4" 
+                class="form-control" 
+                required>
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label for="correctOption">Correct Option</label>
+            <select 
+              id="correctOption" 
+              name="correctOption" 
+              [(ngModel)]="newQuestion.correct_option" 
+              class="form-control" 
+              required>
+              <option [ngValue]="1">Option 1</option>
+              <option [ngValue]="2">Option 2</option>
+              <option [ngValue]="3">Option 3</option>
+              <option [ngValue]="4">Option 4</option>
+            </select>
+          </div>
+          
+          <div class="form-actions">
+            <button type="button" (click)="closeQuestionModal()" class="btn btn-secondary">
+              Cancel
+            </button>
+            <button type="submit" class="btn btn-primary" [disabled]="!questionForm.form.valid">
+              Add Question
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

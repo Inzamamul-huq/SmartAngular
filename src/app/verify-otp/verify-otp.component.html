@@ -1,0 +1,48 @@
+<div class="verify-otp-container">
+  <div class="verify-otp-form">
+    <h2>Verify OTP</h2>
+    
+    <p class="mb-4">We've sent a 6-digit OTP to <strong>{{ email }}</strong>. Please enter it below.</p>
+    <p class="text-muted mb-4">The OTP will expire in 10 minutes.</p>
+    
+    <form [formGroup]="otpForm" (ngSubmit)="onSubmit()">
+      <div class="form-group">
+        <label for="otp">Enter OTP</label>
+        <input 
+          type="text" 
+          id="otp"
+          formControlName="otp"
+          placeholder="Enter 6-digit OTP"
+          maxlength="6"
+          inputmode="numeric"
+          pattern="[0-9]*"
+          [class.is-invalid]="otpForm.get('otp')?.invalid && otpForm.get('otp')?.touched"
+          [disabled]="loading"
+        >
+        <div *ngIf="otpForm.get('otp')?.invalid && otpForm.get('otp')?.touched" class="error-message">
+          <div *ngIf="otpForm.get('otp')?.errors?.['required']">OTP is required</div>
+          <div *ngIf="otpForm.get('otp')?.errors?.['pattern']">Please enter a valid 6-digit OTP</div>
+        </div>
+      </div>
+      
+      <div *ngIf="error" class="alert alert-danger">
+        {{ error }}
+      </div>
+      
+      <button type="submit" [disabled]="otpForm.invalid || loading" class="btn btn-primary">
+        {{ loading ? 'Verifying...' : 'Verify OTP' }}
+      </button>
+      
+      <div class="text-center mt-3">
+        <p>Didn't receive the code?
+          <button type="button" class="btn btn-link p-0" 
+                  (click)="resendOTP()"
+                  [disabled]="loading">
+            {{ loading ? 'Sending...' : 'Resend OTP' }}
+          </button>
+        </p>
+        <a routerLink="/forgot-password">Change Email</a>
+      </div>
+    </form>
+  </div>
+</div>

@@ -1,0 +1,63 @@
+<!-- Main test container with fullscreen reference -->
+<div #testContainer class="test-container" [class.fullscreen-mode]="!submitted" *ngIf="!submitted; else showResult">
+  <div class="test-header">
+    <h2 class="title">{{ jobTitle || 'Online Test' }}</h2>
+    <div class="header-right">
+      <div *ngIf="testStartTime" class="timer" [class.warning]="timeLeft < 300">
+        <i class="bi bi-clock"></i> {{ formatTime(timeLeft) }}
+      </div>
+      <div class="fullscreen-warning" *ngIf="!isFullscreen">
+        <i class="bi bi-fullscreen"></i> Test must be taken in fullscreen mode
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="loading" class="info">Loading questions...</div>
+  <div *ngIf="error" class="error">{{ error }}</div>
+  <div *ngIf="info" class="info">{{ info }}</div>
+
+  <form *ngIf="!loading && !error && questions.length" (ngSubmit)="submit()">
+    <div class="question" *ngFor="let q of questions; index as i">
+      <div class="question-text">
+        <span class="qno">Q{{ i + 1 }}.</span>
+        {{ q.question_text }}
+      </div>
+      <div class="options">
+        <label>
+          <input type="radio" name="q{{ q.id }}" [value]="1" [(ngModel)]="answers[q.id]" (change)="selectOption(q.id, 1)" required />
+          {{ q.option1 }}
+        </label>
+        <label>
+          <input type="radio" name="q{{ q.id }}" [value]="2" [(ngModel)]="answers[q.id]" (change)="selectOption(q.id, 2)" required />
+          {{ q.option2 }}
+        </label>
+        <label>
+          <input type="radio" name="q{{ q.id }}" [value]="3" [(ngModel)]="answers[q.id]" (change)="selectOption(q.id, 3)" required />
+          {{ q.option3 }}
+        </label>
+        <label>
+          <input type="radio" name="q{{ q.id }}" [value]="4" [(ngModel)]="answers[q.id]" (change)="selectOption(q.id, 4)" required />
+          {{ q.option4 }}
+        </label>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button type="submit" class="btn" [disabled]="!allAnswered() || submitting">{{ submitting ? 'Submitting...' : 'Submit Test' }}</button>
+    </div>
+  </form>
+</div>
+
+<ng-template #showResult>
+  <div class="result">
+    <h2>Test Submitted</h2>
+    <div *ngIf="result; else generic">
+      <p><strong>Score:</strong> {{ result.score }} / {{ result.total_questions }}</p>
+      <p><strong>Correct:</strong> {{ result.correct_answers }}</p>
+      <p><strong>Wrong:</strong> {{ result.wrong_answers }}</p>
+    </div>
+    <ng-template #generic>
+      <p>Your test has been submitted.</p>
+    </ng-template>
+  </div>
+</ng-template>
