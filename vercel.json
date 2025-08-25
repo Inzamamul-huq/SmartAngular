@@ -1,15 +1,4 @@
 {
-    "version": 2,
-    "builds": [
-      {
-        "src": "dist/smart/**/*",
-        "use": "@vercel/static"
-      }
-    ],
-    "routes": [
-      {
-        "src": "/(.*)",
-        "dest": "/dist/smart/index.html"
-      }
-    ]
-  }
+  "version": 2,
+  "framework": "angular"
+}
