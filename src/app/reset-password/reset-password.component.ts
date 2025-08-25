@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators, FormsModule } from '@angular/forms';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { Router, RouterModule } from '@angular/router';
+import { StorageService } from '../services/storage.service';
 
 @Component({
   selector: 'app-reset-password',
@@ -22,7 +23,8 @@ export class ResetPasswordComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private http: HttpClient,
-    private router: Router
+    private router: Router,
+    private storageService: StorageService
   ) {
     this.resetForm = this.fb.group({
       newPassword: ['', [Validators.required, Validators.minLength(6)]],
@@ -31,8 +33,8 @@ export class ResetPasswordComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.email = sessionStorage.getItem('resetEmail');
-    this.otp = sessionStorage.getItem('otp');
+    this.email = this.storageService.getItem('resetEmail');
+    this.otp = this.storageService.getItem('otp');
     
     if (!this.email || !this.otp) {
       this.router.navigate(['/forgot-password']);
@@ -64,8 +66,8 @@ export class ResetPasswordComponent implements OnInit {
         this.loading = false;
         this.success = true;
         
-        sessionStorage.removeItem('resetEmail');
-        sessionStorage.removeItem('otp');
+        this.storageService.removeItem('resetEmail');
+        this.storageService.removeItem('otp');
       },
       error: (error) => {
         this.loading = false;

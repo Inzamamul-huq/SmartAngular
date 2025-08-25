@@ -1,14 +1,5 @@
 {
-  "version": 2,
-  "builds": [
-    {
-      "src": "dist/smart/server/server.mjs",
-      "use": "@vercel/angular",
-      "config": { "includeFiles": ["**/*.js", "**/*.mjs"] }
-    }
-  ],
-  "routes": [
-    { "src": "^/assets/(.*)", "dest": "/assets/$1" },
-    { "src": "^/(.*)", "dest": "/" }
+  "rewrites": [
+    { "source": "/(.*)", "destination": "/index.html" }
   ]
 }

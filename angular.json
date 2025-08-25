@@ -11,42 +11,36 @@
       "prefix": "app",
       "architect": {
         "build": {
-          "builder": "@angular/build:application",
+          "builder": "@angular-devkit/build-angular:application",
           "options": {
             "browser": "src/main.ts",
+            "server": "src/main.server.ts",
+            "outputPath": "dist/smart",
+            "index": "src/index.html",
+            "ssr": false,
             "tsConfig": "tsconfig.app.json",
-            "polyfills": [
-              "zone.js"
-            ],
+            "polyfills": ["zone.js"],
             "assets": [
-              
-                 "src/assets",
-                 "src/images"
-              
+              "src/assets",
+              "src/images"
             ],
             "styles": [
               "node_modules/bootstrap/dist/css/bootstrap.min.css",
               "src/styles.css"
-            ],
-            "server": "src/main.server.ts",
-            "outputPath": ".vercel/output/static",
-            "outputMode": "server",
-            "ssr": {
-              "entry": "src/server.ts"
-            }
+            ]
           },
           "configurations": {
             "production": {
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "2MB",
-                  "maximumError": "3MB"
+                  "maximumWarning": "2mb",
+                  "maximumError": "5mb"
                 },
                 {
                   "type": "anyComponentStyle",
-                  "maximumWarning": "20kB",
-                  "maximumError": "25kB"
+                  "maximumWarning": "20kb",
+                  "maximumError": "30kb"
                 }
               ],
               "outputHashing": "all"
@@ -57,50 +51,46 @@
               "sourceMap": true
             },
             "server": {
-              "polyfills": [
-                "src/polyfills.server.ts"
-              ]
+              "outputPath": "dist/smart/server",
+              "polyfills": ["zone.js"]
             }
           },
           "defaultConfiguration": "production"
         },
         "serve": {
+          "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
             "proxyConfig": "proxy.conf.json"
           },
-          "builder": "@angular/build:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "smart:build:production"
+              "browserTarget": "smart:build:production"
             },
             "development": {
-              "buildTarget": "smart:build:development"
+              "browserTarget": "smart:build:development"
             }
           },
           "defaultConfiguration": "development"
         },
         "extract-i18n": {
-          "builder": "@angular/build:extract-i18n"
+          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "options": {
+            "browserTarget": "smart:build"
+          }
         },
         "test": {
-          "builder": "@angular/build:karma",
+          "builder": "@angular-devkit/build-angular:karma",
           "options": {
+            "polyfills": ["zone.js", "zone.js/testing"],
             "tsConfig": "tsconfig.spec.json",
-            "assets": [
-              {
-                "glob": "**/*",
-                "input": "public"
-              }
-            ],
-            "styles": [
-              "src/styles.css"
-            ]
+            "assets": ["src/assets"],
+            "styles": ["src/styles.css"]
           }
         }
       }
     }
   },
   "cli": {
-    "analytics": "0fa5eceb-01b1-4ae7-9e04-9a822713755e"
+    "analytics": false
   }
 }

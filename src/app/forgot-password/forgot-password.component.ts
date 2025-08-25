@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { Router, RouterModule } from '@angular/router';
+import { StorageService } from '../services/storage.service';
 
 @Component({
   selector: 'app-forgot-password',
@@ -21,7 +22,8 @@ export class ForgotPasswordComponent {
   constructor(
     private fb: FormBuilder,
     private http: HttpClient,
-    private router: Router
+    private router: Router,
+    private storageService: StorageService
   ) {
     this.forgotForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]]
@@ -43,7 +45,7 @@ export class ForgotPasswordComponent {
           this.success = true;
           this.emailSentTo = email;
           
-          sessionStorage.setItem('resetEmail', email);
+          this.storageService.setItem('resetEmail', email);
           
           this.router.navigate(['/verify-otp']);
         },

@@ -1,8 +1,9 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { Router, RouterModule } from '@angular/router';
+import { StorageService } from '../services/storage.service';
 
 @Component({
   selector: 'app-verify-otp',
@@ -20,7 +21,8 @@ export class VerifyOtpComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private http: HttpClient,
-    private router: Router
+    private router: Router,
+    private storageService: StorageService
   ) {
     this.otpForm = this.fb.group({
       otp: ['', [Validators.required, Validators.pattern('^[0-9]{6}$')]]
@@ -28,7 +30,7 @@ export class VerifyOtpComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.email = sessionStorage.getItem('resetEmail');
+    this.email = this.storageService.getItem('resetEmail');
     if (!this.email) {
       this.router.navigate(['/forgot-password']);
     }
@@ -45,7 +47,7 @@ export class VerifyOtpComponent implements OnInit {
     const otp = this.otpForm.get('otp')?.value;
     
 
-    sessionStorage.setItem('otp', otp);
+    this.storageService.setItem('otp', otp);
     
     
     this.http.post('https://smartrecruit-l27g.onrender.com/api/student/verify-otp/', {
