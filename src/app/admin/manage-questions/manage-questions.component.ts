@@ -69,7 +69,7 @@ export class ManageQuestionsComponent implements OnInit {
     this.loading = true;
     this.error = null;
 
-    this.http.get(`http://localhost:https://smartrecruit-9ofm.onrender.com/api/getquestions/job/${this.jobId}/`, {
+    this.http.get(`https://smartrecruit-9ofm.onrender.com/api/getquestions/job/${this.jobId}/`, {
       withCredentials: true
     }).subscribe({
       next: (response: any) => {
@@ -134,7 +134,7 @@ export class ManageQuestionsComponent implements OnInit {
 
     if (this.editingQuestion && this.editingQuestion.id) {
       const questionWithId = { ...questionData, id: this.editingQuestion.id };
-      this.http.put(`http://localhost:https://smartrecruit-9ofm.onrender.com/api/crud/questions/${this.editingQuestion.id}/`, 
+      this.http.put(`https://smartrecruit-9ofm.onrender.com/api/crud/questions/${this.editingQuestion.id}/`, 
         questionWithId,
         { 
           withCredentials: true,
@@ -154,7 +154,7 @@ export class ManageQuestionsComponent implements OnInit {
       });
     } else {
       // Create new question
-      this.http.post('http://localhost:https://smartrecruit-9ofm.onrender.com/api/createquestion/', 
+      this.http.post('https://smartrecruit-9ofm.onrender.com/api/createquestion/', 
         questionData,
         { withCredentials: true }
       ).subscribe({
@@ -179,7 +179,7 @@ export class ManageQuestionsComponent implements OnInit {
     if (confirm('Are you sure you want to delete this question? This action cannot be undone.')) {
       this.loading = true;
       this.http.delete(
-        `http://localhost:https://smartrecruit-9ofm.onrender.com/api/crud/questions/${id}/`,
+        `https://smartrecruit-9ofm.onrender.com/api/crud/questions/${id}/`,
         { 
           withCredentials: true,
           observe: 'response'  // Get full response to check status

@@ -53,7 +53,7 @@ export class EditJobComponent implements OnInit {
     this.loading = true;
     this.error = null;
 
-    this.http.get<Job>(`http://localhost:https://smartrecruit-9ofm.onrender.com/api/jobs/${id}/`, {
+    this.http.get<Job>(`https://smartrecruit-9ofm.onrender.com/api/jobs/${id}/`, {
       withCredentials: true
     }).subscribe({
       next: (job) => {
@@ -81,7 +81,7 @@ export class EditJobComponent implements OnInit {
     this.error = null;
 
     this.http.put(
-      `http://localhost:https://smartrecruit-9ofm.onrender.com/api/jobs/crud/${this.jobId}/`,
+      `https://smartrecruit-9ofm.onrender.com/api/jobs/crud/${this.jobId}/`,
       this.jobForm.value,
       { withCredentials: true }
     ).subscribe({
