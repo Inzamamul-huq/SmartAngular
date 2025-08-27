@@ -68,6 +68,7 @@ interface Applicant {
   id: number;
   name: string;
   email: string;
+  resume_url?: string;
   applied_at: string;
   resume: string | null;
   student_id?: number | null;
@@ -610,18 +611,16 @@ Hiring Team`
   }
 
   viewResume(applicant: Applicant) {
-    if (applicant.student_id && applicant.resume) {
-      
-      if (applicant.resume.startsWith('http')) {
-        window.open(applicant.resume, '_blank');
-      } 
-      
-      else {
+    const resumeUrl = applicant.resume || applicant.resume_url;
+    if (applicant.student_id && resumeUrl) {
+      if (resumeUrl.startsWith('http')) {
+        window.open(resumeUrl, '_blank');
+      } else {
         const baseUrl = 'https://smartrecruit-9ofm.onrender.com';
-        if (applicant.resume.startsWith('/media/')) {
-          window.open(`${baseUrl}${applicant.resume}`, '_blank');
+        if (resumeUrl.startsWith('/media/')) {
+          window.open(`${baseUrl}${resumeUrl}`, '_blank');
         } else {
-          window.open(`${baseUrl}/media/resumes/${applicant.resume}`, '_blank');
+          window.open(`${baseUrl}/media/resumes/${resumeUrl}`, '_blank');
         }
       }
     }

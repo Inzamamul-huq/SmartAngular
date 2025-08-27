@@ -524,10 +524,10 @@
                 <td>{{ applicant.email }}</td>
                 <td>{{ applicant.applied_at | date:'medium' }}</td>
                 <td>
-                  <button *ngIf="applicant.resume && applicant.student_id" (click)="viewResume(applicant); $event.stopPropagation()" class="btn btn-sm btn-view">
+                  <button *ngIf="(applicant.resume || applicant.resume_url) && applicant.student_id" (click)="viewResume(applicant); $event.stopPropagation()" class="btn btn-sm btn-view">
                     <i class="fas fa-eye"></i> View Resume
                   </button>
-                  <span *ngIf="!applicant.resume">No resume</span>
+                  <span *ngIf="!applicant.resume && !applicant.resume_url">No resume</span>
                 </td>
                
                 <td class="text-center">
