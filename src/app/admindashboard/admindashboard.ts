@@ -616,22 +616,13 @@ Hiring Team`
   }
 
   viewResume(applicant: Applicant) {
-   
-    let resumeUrl = applicant.resume_url || applicant.resume;
-    
+    // Prefer the canonical resume_url (Supabase public URL) over legacy resume field
+    const resumeUrl = applicant.resume_url || applicant.resume;
     if (applicant.student_id && resumeUrl) {
-      
+      console.log('Opening resume URL:', resumeUrl);
       if (resumeUrl.startsWith('http')) {
-       
-        if (resumeUrl.includes('supabase.co/storage/v1/object/public/')) {
-         
-          const publicUrl = resumeUrl.replace('/object/', '/object/public/');
-          window.open(publicUrl, '_blank');
-        } else {
-          window.open(resumeUrl, '_blank');
-        }
+        window.open(resumeUrl, '_blank');
       } else {
-      
         const baseUrl = 'https://smartrecruit-9ofm.onrender.com';
         if (resumeUrl.startsWith('/media/')) {
           window.open(`${baseUrl}${resumeUrl}`, '_blank');
