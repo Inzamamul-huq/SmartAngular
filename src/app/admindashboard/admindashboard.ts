@@ -611,33 +611,37 @@ Hiring Team`
 
   viewResume(applicant: Applicant) {
     if (applicant.student_id && applicant.resume) {
-      const baseUrl = 'https://smartrecruit-9ofm.onrender.com';
+      
       if (applicant.resume.startsWith('http')) {
         window.open(applicant.resume, '_blank');
       } 
       
-      else if (applicant.resume.startsWith('/media/')) {
-        window.open(`${baseUrl}${applicant.resume}`, '_blank');
-      }
-      
       else {
-        window.open(`${baseUrl}/media/resumes/${applicant.resume}`, '_blank');
+        const baseUrl = 'https://smartrecruit-9ofm.onrender.com';
+        if (applicant.resume.startsWith('/media/')) {
+          window.open(`${baseUrl}${applicant.resume}`, '_blank');
+        } else {
+          window.open(`${baseUrl}/media/resumes/${applicant.resume}`, '_blank');
+        }
       }
     }
   }
 
+  
   downloadResume(applicant: Applicant) {
     if (applicant.student_id && applicant.resume) {
       const link = document.createElement('a');
+      const baseUrl = 'https://smartrecruit-9ofm.onrender.com';
       let resumeUrl = '';
       
       
       if (applicant.resume.startsWith('http')) {
         resumeUrl = applicant.resume;
-      } else if (applicant.resume.startsWith('/media/')) {
-        resumeUrl = `https://smartrecruit-9ofm.onrender.com${applicant.resume}`;
+      } 
+      else if (applicant.resume.startsWith('/media/')) {
+        resumeUrl = `${baseUrl}${applicant.resume}`;
       } else {
-        resumeUrl = `https://smartrecruit-9ofm.onrender.com/media/resumes/${applicant.resume}`;
+        resumeUrl = `${baseUrl}/media/resumes/${applicant.resume}`;
       }
       
       

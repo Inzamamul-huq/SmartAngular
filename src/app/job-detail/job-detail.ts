@@ -250,9 +250,15 @@ export class JobDetail implements OnInit {
         let errorMessage = 'Failed to submit application. Please try again.';
         
         if (error.status === 400) {
-          errorMessage = error.error?.error || error.error?.detail || errorMessage;
-        } else if (error.status === 500) {
-          errorMessage = 'Server error. Please try again later.';
+          // Check if this is the interview experience submission error
+          if (error.error?.code === 'interview_experience_required' || 
+              error.error?.error?.includes('submit your interview experience')) {
+            errorMessage = 'Please submit your interview experience for the previous job to apply for new opportunities.';
+          } else {
+            errorMessage = error.error?.error || error.error?.detail || errorMessage;
+          }
+        } else if (error.status === 403 || error.status === 500) {
+          errorMessage = error.error?.error || 'Server error. Please try again later.';
         }
         
         this.error = errorMessage;
