@@ -68,13 +68,14 @@ interface Applicant {
   id: number;
   name: string;
   email: string;
-  resume_url?: string;
+  resume_url: string | null;
   applied_at: string;
   resume: string | null;
   student_id?: number | null;
   is_shortlisted?: boolean;
   test_score?: number | null;
   test_schedule_id?: number | null;
+  [key: string]: any; // Add index signature to allow additional properties
 }
 
 @Component({
@@ -535,7 +536,8 @@ Hiring Team`
                       next: (studentDetails) => {
                         resolve({
                           ...applicant,
-                          resume: studentDetails?.resume || null,
+                          resume: studentDetails?.resume || applicant.resume || null,
+                          resume_url: studentDetails?.resume_url || applicant.resume_url || null,
                           student_id: studentDetails?.id,
                           is_shortlisted: applicant.is_shortlisted || false
                         });
@@ -545,7 +547,8 @@ Hiring Team`
                         
                         resolve({
                           ...applicant,
-                          resume: student?.resume || null,
+                          resume: student?.resume || applicant.resume || null,
+                          resume_url: student?.resume_url || applicant.resume_url || null,
                           student_id: student?.id,
                           is_shortlisted: applicant.is_shortlisted || false
                         });
@@ -555,7 +558,8 @@ Hiring Team`
                     
                     resolve({
                       ...applicant,
-                      resume: null,
+                      resume: applicant.resume || null,
+                      resume_url: applicant.resume_url || null,
                       student_id: null,
                       is_shortlisted: applicant.is_shortlisted || false
                     });
@@ -581,7 +585,8 @@ Hiring Team`
                   .filter(a => a !== null && a !== undefined)
                   .map(applicant => ({
                     ...applicant,
-                    resume: null,
+                    resume: applicant.resume || null,
+                    resume_url: applicant.resume_url || null,
                     student_id: null,
                     is_shortlisted: applicant.is_shortlisted || false
                   }));
