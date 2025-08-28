@@ -135,16 +135,13 @@
                       </div>
                     </td>
                     <td>
-                    <a *ngIf="student.resume" 
-                      href="https://smartrecruit-9ofm.onrender.com{{ student.resume }}" 
+                    <a *ngIf="student.resume_url" 
+                      [href]="student.resume_url" 
                       target="_blank" 
-                      
                       title="View Resume">
                       <i class="fas fa-file-pdf"></i>
-                      
-                   
-                   
-                   <span class="approval-status">view resume</span> </a> </td>
+                      <span class="approval-status">view resume</span>
+                    </a> </td>
                   </tr>
               </tbody>
             </table>

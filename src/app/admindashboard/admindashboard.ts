@@ -536,7 +536,6 @@ Hiring Team`
                       next: (studentDetails) => {
                         resolve({
                           ...applicant,
-                          // Prefer per-application values; only fallback to student profile if missing
                           resume: applicant.resume || studentDetails?.resume || null,
                           resume_url: applicant.resume_url || studentDetails?.resume_url || null,
                           student_id: studentDetails?.id,
@@ -548,9 +547,7 @@ Hiring Team`
                         
                         resolve({
                           ...applicant,
-                          // Prefer per-application values; only fallback to student profile if missing
-                          // Prefer per-application values; only fallback to student list if missing
-                          resume: applicant.resume || student?.resume || null,
+                           resume: applicant.resume || student?.resume || null,
                           resume_url: applicant.resume_url || student?.resume_url || null,
                           student_id: student?.id,
                           is_shortlisted: applicant.is_shortlisted || false
