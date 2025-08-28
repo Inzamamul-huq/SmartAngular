@@ -134,7 +134,7 @@ export class AppliedJobsComponent implements OnInit {
     if (!user?.email) return;
     
     if (jobId) {
-      this.http.get<any>(`https://smartrecruit-9ofm.onrender.com/api/jobs/${jobId}/opportunities/`, { withCredentials: true }).subscribe({
+      this.http.get<any>(`/api/jobs/${jobId}/opportunities/`, { withCredentials: true }).subscribe({
         next: (response) => {
           if (response.status === 'success' && this.selectedJob) {
             this.selectedJob.received_opportunities = response.opportunities || [];
@@ -145,7 +145,7 @@ export class AppliedJobsComponent implements OnInit {
         }
       });
     } else {
-      this.http.get<any>('https://smartrecruit-9ofm.onrender.com/api/job-opportunities/student/', {
+      this.http.get<any>('/api/job-opportunities/student/', {
         params: { student_email: user.email },
         withCredentials: true
       }).subscribe({
@@ -171,7 +171,7 @@ export class AppliedJobsComponent implements OnInit {
       return;
     }
 
-    this.http.get<{status: string, applications: AppliedJob[]}>(`https://smartrecruit-9ofm.onrender.com/api/student/applications/email/${user.email}`, { withCredentials: true })
+    this.http.get<{status: string, applications: AppliedJob[]}>(`/api/student/applications/${user.email}`)
       .subscribe({
         next: (response) => {
           if (response.status === 'success') {
