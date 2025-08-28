@@ -171,7 +171,7 @@ export class AppliedJobsComponent implements OnInit {
       return;
     }
 
-    this.http.get<{status: string, applications: AppliedJob[]}>(`/api/student/applications/${user.email}`)
+    this.http.get<{status: string, applications: AppliedJob[]}>(`/api/student/applications/email/${user.email}`)
       .subscribe({
         next: (response) => {
           if (response.status === 'success') {
