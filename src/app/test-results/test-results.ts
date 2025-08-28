@@ -186,7 +186,7 @@ export class TestResults implements OnInit {
     
     console.log('Sending job details:', payload);
 
-    this.http.post('/api/job-opportunities/', payload, { 
+    this.http.post('https://smartrecruit-9ofm.onrender.com/api/job-opportunities/', payload, { 
       withCredentials: true,
       headers: { 'Content-Type': 'application/json' }
     }).subscribe({
@@ -261,7 +261,7 @@ export class TestResults implements OnInit {
     
     console.log(`Fetching test results for schedule ID: ${testScheduleId}`);
     
-    this.http.get<TestResult>(`/api/test/results/${testScheduleId}/`)
+    this.http.get<TestResult>(`https://smartrecruit-9ofm.onrender.com/api/test/results/${testScheduleId}/`)
       .subscribe({
         next: (response: any) => {
           console.log('Test results API response:', response);
