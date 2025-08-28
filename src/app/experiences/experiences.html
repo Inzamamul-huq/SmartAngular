@@ -114,36 +114,36 @@
     <div class="mb-3" *ngIf="hasAttachments()">
       <h6>Attachments</h6>
       <div class="list-group">
-        <a *ngIf="selectedExperience.aptitude_attachment" 
-           [href]="getAttachmentUrl(selectedExperience.aptitude_attachment)"
+        <a *ngIf="selectedExperience.aptitude_attachment_url || selectedExperience.aptitude_attachment" 
+           [href]="getAttachmentUrl(selectedExperience.aptitude_attachment_url || selectedExperience.aptitude_attachment)"
            target="_blank"
            class="list-group-item file-attachment">
           <i class="bi bi-file-earmark-pdf file-icon"></i>
-          <span class="text-truncate">{{ getFileName(selectedExperience.aptitude_attachment) }}</span>
+          <span class="text-truncate">{{ getFileName(selectedExperience.aptitude_attachment_url || selectedExperience.aptitude_attachment) }}</span>
         </a>
 
-        <a *ngIf="selectedExperience.technical_attachment"
-           [href]="getAttachmentUrl(selectedExperience.technical_attachment)"
+        <a *ngIf="selectedExperience.technical_attachment_url || selectedExperience.technical_attachment"
+           [href]="getAttachmentUrl(selectedExperience.technical_attachment_url || selectedExperience.technical_attachment)"
            target="_blank"
            class="list-group-item file-attachment">
           <i class="bi bi-file-earmark-pdf file-icon"></i>
-          <span class="text-truncate">{{ getFileName(selectedExperience.technical_attachment) }}</span>
+          <span class="text-truncate">{{ getFileName(selectedExperience.technical_attachment_url || selectedExperience.technical_attachment) }}</span>
         </a>
 
-        <a *ngIf="selectedExperience.hr_attachment"
-           [href]="getAttachmentUrl(selectedExperience.hr_attachment)"
+        <a *ngIf="selectedExperience.hr_attachment_url || selectedExperience.hr_attachment"
+           [href]="getAttachmentUrl(selectedExperience.hr_attachment_url || selectedExperience.hr_attachment)"
            target="_blank"
            class="list-group-item file-attachment">
           <i class="bi bi-file-earmark-pdf file-icon"></i>
-          <span class="text-truncate">{{ getFileName(selectedExperience.hr_attachment) }}</span>
+          <span class="text-truncate">{{ getFileName(selectedExperience.hr_attachment_url || selectedExperience.hr_attachment) }}</span>
         </a>
 
-        <a *ngIf="selectedExperience.gd_attachment"
-           [href]="getAttachmentUrl(selectedExperience.gd_attachment)"
+        <a *ngIf="selectedExperience.gd_attachment_url || selectedExperience.gd_attachment"
+           [href]="getAttachmentUrl(selectedExperience.gd_attachment_url || selectedExperience.gd_attachment)"
            target="_blank"
            class="list-group-item file-attachment">
           <i class="bi bi-file-earmark-pdf file-icon"></i>
-          <span class="text-truncate">{{ getFileName(selectedExperience.gd_attachment) }}</span>
+          <span class="text-truncate">{{ getFileName(selectedExperience.gd_attachment_url || selectedExperience.gd_attachment) }}</span>
         </a>
       </div>
     </div>

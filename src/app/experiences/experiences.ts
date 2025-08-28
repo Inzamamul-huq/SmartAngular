@@ -16,9 +16,13 @@ interface Experience {
   hr_questions?: string;
   gd_topics?: string;
   aptitude_attachment?: string;
+  aptitude_attachment_url?: string;
   technical_attachment?: string;
+  technical_attachment_url?: string;
   hr_attachment?: string;
+  hr_attachment_url?: string;
   gd_attachment?: string;
+  gd_attachment_url?: string;
   aptitude_conducted?: boolean;
   technical_conducted?: boolean;
   gd_conducted?: boolean;
@@ -76,10 +80,16 @@ export class Experiences implements OnInit {
 
   hasAttachments(): boolean {
     if (!this.selectedExperience) return false;
-    return !!(this.selectedExperience.aptitude_attachment || 
-             this.selectedExperience.technical_attachment || 
-             this.selectedExperience.hr_attachment || 
-             this.selectedExperience.gd_attachment);
+    return !!(
+      this.selectedExperience.aptitude_attachment_url ||
+      this.selectedExperience.technical_attachment_url ||
+      this.selectedExperience.hr_attachment_url ||
+      this.selectedExperience.gd_attachment_url ||
+      this.selectedExperience.aptitude_attachment || 
+      this.selectedExperience.technical_attachment || 
+      this.selectedExperience.hr_attachment || 
+      this.selectedExperience.gd_attachment
+    );
   }
 
   getAttachmentUrl(attachmentPath: string): string {
@@ -90,9 +100,11 @@ export class Experiences implements OnInit {
     return `https://smartrecruit-9ofm.onrender.com${attachmentPath}`;
   }
 
-  getFileName(path: string): string {
-    if (!path) return '';
-    const pathParts = path.split(/[\\/]/);
+  getFileName(pathOrUrl: string): string {
+    if (!pathOrUrl) return '';
+    // Strip query params if URL
+    const clean = pathOrUrl.split('?')[0];
+    const pathParts = clean.split(/[\\/]/);
     return pathParts[pathParts.length - 1];
   }
 }
