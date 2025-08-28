@@ -26,6 +26,7 @@ interface Student {
   name: string;
   phone: string;
   resume: string | null;
+  resume_url?: string | null;
   is_selected: string | null;
   admin_tips: string | null;
   allow?: string | null; 
