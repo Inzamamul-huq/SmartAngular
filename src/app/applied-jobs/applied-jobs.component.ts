@@ -145,7 +145,7 @@ export class AppliedJobsComponent implements OnInit {
         }
       });
     } else {
-      this.http.get<any>('/api/job-opportunities/student/', {
+      this.http.get<any>('https://smartrecruit-9ofm.onrender.com/api/job-opportunities/student/', {
         params: { student_email: user.email },
         withCredentials: true
       }).subscribe({
