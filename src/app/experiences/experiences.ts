@@ -92,7 +92,7 @@ export class Experiences implements OnInit {
     );
   }
 
-  getAttachmentUrl(attachmentPath: string): string {
+  getAttachmentUrl(attachmentPath?: string): string {
     if (!attachmentPath) return '';
     if (attachmentPath.startsWith('http')) {
       return attachmentPath;
@@ -100,7 +100,7 @@ export class Experiences implements OnInit {
     return `https://smartrecruit-9ofm.onrender.com${attachmentPath}`;
   }
 
-  getFileName(pathOrUrl: string): string {
+  getFileName(pathOrUrl?: string): string {
     if (!pathOrUrl) return '';
     // Strip query params if URL
     const clean = pathOrUrl.split('?')[0];
