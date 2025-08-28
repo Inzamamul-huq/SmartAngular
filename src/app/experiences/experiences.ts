@@ -51,7 +51,7 @@ export class Experiences implements OnInit {
     this.loading = true;
     this.error = null;
     
-    this.http.get<Experience[]>('/api/interview-questions/experience/all/')
+    this.http.get<Experience[]>('https://smartrecruit-9ofm.onrender.com/api/interview-questions/experience/all/')
       .subscribe({
         next: (data) => {
           this.experiences = data;

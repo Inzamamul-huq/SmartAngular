@@ -448,7 +448,7 @@ export class AppliedJobsComponent implements OnInit {
       formData.append(key, this.selectedFiles[key]);
     });
 
-    this.http.post('/api/interview-questions/experience/', formData).subscribe({
+    this.http.post('https://smartrecruit-9ofm.onrender.com/api/interview-questions/experience/', formData).subscribe({
       next: (response) => {
         this.isSubmitting = false;
         this.modalService.dismissAll();
