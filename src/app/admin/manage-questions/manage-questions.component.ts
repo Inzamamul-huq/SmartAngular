@@ -120,7 +120,7 @@ export class ManageQuestionsComponent implements OnInit {
       return;
     }
 
-    // Format the data to match backend expectations
+    
     const formValue = this.questionForm.value;
     const questionData: MCQQuestion & { job_id: number } = {
       question_text: formValue.question_text,
@@ -153,7 +153,7 @@ export class ManageQuestionsComponent implements OnInit {
         }
       });
     } else {
-      // Create new question
+      
       this.http.post('https://smartrecruit-9ofm.onrender.com/api/createquestion/', 
         questionData,
         { withCredentials: true }
@@ -186,9 +186,9 @@ export class ManageQuestionsComponent implements OnInit {
         }
       ).subscribe({
         next: (response: any) => {
-          // If we get here, the delete was successful
+          
           this.loadQuestions();
-          // Reset maxQuestionsReached flag since we've deleted a question
+          
           this.maxQuestionsReached = this.questions.length - 1 >= this.MAX_QUESTIONS;
         },
         error: (error) => {

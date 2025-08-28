@@ -20,20 +20,11 @@
     </div>
   </div>
  
-  <div *ngIf="loading" class="loading">
-    <div class="spinner"></div>
-    <p>Loading your applications...</p>
-  </div>
-
-  <div *ngIf="error" class="error-message">
-    {{ error }}
-    <button (click)="fetchAppliedJobs()" class="btn btn-sm btn-outline-secondary">
-      Retry
-    </button>
-  </div>
-
   <div *ngIf="$any(activeTab) === 'applied'">
-    <div *ngIf="loading" class="loading">Loading your applications...</div>
+    <div *ngIf="loading" class="loading">
+      <div class="spinner"></div>
+      <p>Loading your applications...</p>
+    </div>
     <div *ngIf="!loading && error" class="error-message">
       {{ error }}
       <button (click)="fetchAppliedJobs()" class="btn btn-sm btn-outline-secondary ms-2">Retry</button>

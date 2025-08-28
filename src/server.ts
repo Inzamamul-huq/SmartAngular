@@ -17,13 +17,13 @@ export function app(): express.Express {
   server.set('view engine', 'html');
   server.set('views', browserDistFolder);
 
-  // Serve static files from /browser
+  
   server.get('*.*', express.static(browserDistFolder, {
     maxAge: '1y',
     index: false,
   }));
 
-  // All regular routes use the Angular engine
+  
   server.get('*', (req, res, next) => {
     const { protocol, originalUrl, baseUrl, headers } = req;
 

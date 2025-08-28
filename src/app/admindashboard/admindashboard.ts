@@ -617,7 +617,7 @@ Hiring Team`
   }
 
   viewResume(applicant: Applicant) {
-    // Prefer the canonical resume_url (Supabase public URL) over legacy resume field
+    
     const resumeUrl = applicant.resume_url || applicant.resume;
     if (applicant.student_id && resumeUrl) {
       console.log('Opening resume URL:', resumeUrl);

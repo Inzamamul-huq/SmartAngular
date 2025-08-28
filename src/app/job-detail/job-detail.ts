@@ -250,7 +250,7 @@ export class JobDetail implements OnInit {
         let errorMessage = 'Failed to submit application. Please try again.';
         
         if (error.status === 400) {
-          // Check if this is the interview experience submission error
+          
           if (error.error?.code === 'interview_experience_required' || 
               error.error?.error?.includes('submit your interview experience')) {
             errorMessage = 'Please submit your interview experience for the previous job to apply for new opportunities.';
